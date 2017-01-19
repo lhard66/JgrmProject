@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>impress基础</title>
+  <link rel="stylesheet" href="../node_modules/impress.js/css/impress-demo.css">
+</head>
+
+<body>
+  <div class="impress-not-supported"></div>
+  <div id="impress">
+    <div class="step" data-x="0" data-y="0">
+      slide 1 - 无任何参数。
+    </div>
+    <div class="step" data-x="500" data-y="0">
+      slide 2 - 坐标：(500，-400)
+    </div>
+    <div class="step" data-x="500" data-y="-400">
+      slide 3 - 坐标：(500，-400)
+    </div>
+    <div class="step" data-x="500" data-y="-800" data-scale="0.5">
+      slide 4 - 坐标：(500，-800)
+    </div>
+    <div class="step" data-x="0" data-y="-800" data-rotate="90">
+      slide 5 - 坐标：(0,-800)
+    </div>
+    <div class="step" data-x="-1200" data-y="0" data-rotate-x="30" data-rotate-y="-30" data-rotate-z="90" data-scale="4">
+      slide 6 - 坐标：(90,-30,90)
+    </div>
+    <div id="overview" class="step" data-x="-200" data-y="-500" data-scale="3"></div>
+  </div>
+  <script src="../node_modules/impress.js/js/impress.js"></script>
+  <script>
+  impress().init();
+  </script>
+</body>
+
+</html>
