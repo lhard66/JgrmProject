@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "impress.js": "^0.6.0"
+    "impress.js": "^0.6.0",
+    "vue": "^2.1.10"
   }
 }
