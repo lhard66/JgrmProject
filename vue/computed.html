@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>计算属性的使用</title>
+  <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+  <h3>因在模板中放入太多的逻辑会让模板过重且难以维护。</h3>
+  <h3>任何复杂逻辑，都应当使用计算属性。</h3>
+  <div id="demo">{{fullName}}</div>
+  <script>
+  var vm = new Vue({
+    el: '#demo',
+    data: {
+      firstName: 'Foo',
+      lastName: 'Bar 666'
+    },
+    computed: {
+      fullName: function() {
+        return this.firstName + ' ' + this.lastName
+      }
+    }
+  })
+  </script>
+</body>
+
+</html>
