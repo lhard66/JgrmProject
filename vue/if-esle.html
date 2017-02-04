@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>if-else配合template使用</title>
+  <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <template v-if="loginType">
+      <label>Username</label>
+      <!-- 此处的key用于决定input控件是否重新渲染，其中input标签切换时需要重新渲染，label标签切换时不需要重新渲染 -->
+      <input type="text" placeholder="Enter your username" key="username-input">
+    </template>
+    <template v-else>
+      <label>Email</label>
+      <input type="text" placeholder="Enter your email address" key="email-input">
+    </template>
+    <button type="button" @click="toggle">Toggle login type</button>
+  </div>
+  <script>
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      loginType: true
+    },
+    methods: {
+      toggle: function(event) {
+        this.loginType = !this.loginType;
+      }
+    }
+  })
+  </script>
+</body>
+
+</html>
