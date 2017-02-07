@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
+<html>
 
 <head>
   <meta charset="utf-8">
@@ -21,6 +21,7 @@
     <button type="button" @click="toggle">Toggle login type</button>
   </div>
   <script>
+  console.log('begin...');
   var vm = new Vue({
     el: '#app',
     data: {
@@ -29,6 +30,7 @@
     methods: {
       toggle: function(event) {
         this.loginType = !this.loginType;
+        console.log('hello ltq');
       }
     }
   })
