@@ -1,10 +1,18 @@
 body {
-  background: #264d73; }
+  background: #264c73;
+}
 
 div {
   width: 100px;
-  height: 100px; }
-  div p {
-    background-color: red; }
+  height: 100px;
+}
+div p {
+  background-color: red;
+}
+
+span {
+  background-color: gray;
+  font-size: 51px;
+}
 
 /*# sourceMappingURL=test.css.map */
