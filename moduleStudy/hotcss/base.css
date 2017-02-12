@@ -1,0 +1,32 @@
+body {
+  width: 16rem;
+  margin: 0 auto;
+  padding: 0; }
+
+.header {
+  height: 4.26667rem;
+  line-height: 4.26667rem;
+  text-align: center;
+  font-size: 0.768rem;
+  color: #434343;
+  background-color: gray;
+  border-bottom: 0.42667rem solid #ECEDF1; }
+
+.content {
+  height: 4.416rem;
+  line-height: 4.416rem;
+  text-align: center;
+  font-size: 0.68267rem;
+  color: red;
+  background-color: purple;
+  border-bottom: 0.85333rem solid #ECEDF1; }
+
+.footer {
+  height: 1.70667rem;
+  line-height: 1.70667rem;
+  font-size: 0.768rem;
+  color: #FFFFFF;
+  background-color: #52B4FF;
+  text-align: center; }
+
+/*# sourceMappingURL=base.css.map */
