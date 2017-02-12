@@ -1,0 +1,11 @@
+$color: #369;
+body {
+  background: darken($color, 10%);
+}
+div{
+	width: 100px;
+	height: 100px;
+	p{
+		background-color: red;
+	}
+}
