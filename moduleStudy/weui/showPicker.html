@@ -4,13 +4,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>单列选择器用法</title>
+  <title>单列选择器和toptips的用法</title>
   <link rel="stylesheet" href="../../node_modules/weui/dist/style/weui.css">
   <script src="../../node_modules/weui.js/dist/weui.js"></script>
 </head>
 
 <body>
-  <a href="javascript:;" class="weui-btn weui-btn_primary" id="pickerBtn">绿色按钮</a>    
+  <a href="javascript:;" class="weui-btn weui-btn_primary" id="pickerBtn">绿色按钮</a>
+  <a href="javascript:;" class="weui-btn weui-btn_primary" id="toptipsBtn">toptips</a>
   <script>
   /* picker */
   // 普通选择器
@@ -20,7 +21,7 @@
       value: 0
     }, {
       label: '火车票(disabled)',
-      disabled: true,//不可选择
+      disabled: true, //不可选择
       value: 1
     }, {
       label: '住宿费',
@@ -35,14 +36,21 @@
       defaultValue: [8],
       className: 'custom-classname',
       onChange: function onChange(result) {
-      	//选中的值发生变化时回调
+        //选中的值发生变化时回调
         console.log(result);
       },
       onConfirm: function onConfirm(result) {
-      	//点击确定时回调
+        //点击确定时回调
         console.log(result);
       },
       id: 'picker'
+    });
+  });
+  </script>
+  <script>
+  document.querySelector('#toptipsBtn').addEventListener('click', function() {
+    weui.topTips('请填写正确的字段', function() {
+      console.log('close')
     });
   });
   </script>
