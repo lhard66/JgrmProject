@@ -1,0 +1,37 @@
+.layout{
+	margin: 20px 40px;
+}
+.header>.step{
+	overflow: hidden;
+}
+.header>.step>div{
+	float: left;
+	height: 30px;
+	width: 120px;
+	line-height: 30px;
+	text-align: center;
+	color: #FFF;
+	background-color: #009DDA;
+	padding: 0 10px;
+	margin-right: 50px;
+	position: relative;
+}
+.header>.step>div:not(:first-child)::before{
+	content: "";
+    border: 15px solid #009DDA;
+    border-left-color: transparent;
+    position: absolute;
+    top: 0;
+    left: -30px;
+}
+.header>.step>div:not(:last-child)::after{
+	content: "";
+	border: 15px solid transparent;
+	border-left-color: #009DDA;
+	position: absolute;
+	top: 0;
+	right: -30px;
+}
+.header>.tips{
+	padding: 15px 5px;
+}
