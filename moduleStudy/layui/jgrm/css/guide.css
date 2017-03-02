@@ -11,27 +11,31 @@
 	line-height: 30px;
 	text-align: center;
 	color: #FFF;
-	background-color: #009DDA;
+	background-color: #999999;
 	padding: 0 10px;
 	margin-right: 50px;
 	position: relative;
 }
-.header>.step>div:not(:first-child)::before{
+.header>.step>div::before{
 	content: "";
-    border: 15px solid #009DDA;
+    border: 15px solid #999999;
     border-left-color: transparent;
     position: absolute;
     top: 0;
     left: -30px;
 }
-.header>.step>div:not(:last-child)::after{
+.header>.step>div::after{
 	content: "";
 	border: 15px solid transparent;
-	border-left-color: #009DDA;
+	border-left-color: #999999;
 	position: absolute;
 	top: 0;
 	right: -30px;
 }
+
 .header>.tips{
 	padding: 15px 5px;
+}
+.layui-btn{
+	background-color: #009DDA;
 }
