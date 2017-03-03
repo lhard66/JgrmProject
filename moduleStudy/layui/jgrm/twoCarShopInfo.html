@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div class="layout">
+    <div class="layui-main">
         <div class="header">
             <div class="step">
                 <div class="step-one">
@@ -33,18 +33,18 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">门店名称</label>
                     <div class="layui-input-block">
-                        <input type="text" name="" placeholder="请输入门店名称" autocomplete="off" class="layui-input">
+                        <input type="text" name="title" placeholder="请输入门店名称" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">门店logo</label>
                     <div class="layui-input-block">
                         <div class="car-upload">
-                            <img id="LAY_demo_upload" src="./imgs/bmw.jpg">
+                            <img id="LAY_demo_upload" src="./imgs/guitar.png">
                             <div class="car-upbar">
                                 <div class="layui-box layui-upload-button">
-                                    <form target="layui-upload-iframe" method="get" key="set-mine" enctype="multipart/form-data" action="/test/upload.json">
-                                        <input type="file" name="file" class="layui-upload-file" id="test">
+                                    <form target="layui-upload-iframe" method="get" key="set-mine" enctype="multipart/form-data">
+                                        <input type="file" name="logo" accept="image/png,image/gif" class="layui-upload-file">
                                     </form><span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span></div>
                             </div>
                         </div>
@@ -55,29 +55,29 @@
             <label class="layui-form-label">店招图片</label>
             <div class="layui-input-block">
                 <div class="car-upload">
-                    <img id="LAY_demo_upload" src="./imgs/bmw.jpg">
+                    <img id="LAY_demo_upload" src="./imgs/guitar.png">
                     <div class="car-upbar">
                         <div class="layui-box layui-upload-button">
                             <form target="layui-upload-iframe" method="get" key="set-mine" enctype="multipart/form-data" action="/test/upload.json">
-                                <input type="file" name="file" class="layui-upload-file" id="test">
+                                <input type="file" name="shopImg1" class="layui-upload-file" >
                             </form><span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span></div>
                     </div>
                 </div>
                 <div class="car-upload">
-                    <img id="LAY_demo_upload" src="./imgs/bmw.jpg">
+                    <img id="LAY_demo_upload" src="./imgs/guitar.png">
                     <div class="car-upbar">
                         <div class="layui-box layui-upload-button">
                             <form target="layui-upload-iframe" method="get" key="set-mine" enctype="multipart/form-data" action="/test/upload.json">
-                                <input type="file" name="file" class="layui-upload-file" id="test">
+                                <input type="file" name="shopImg2" class="layui-upload-file" >
                             </form><span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span></div>
                     </div>
                 </div>
                 <div class="car-upload">
-                    <img id="LAY_demo_upload" src="./imgs/bmw.jpg">
+                    <img id="LAY_demo_upload" src="./imgs/guitar.png">
                     <div class="car-upbar">
                         <div class="layui-box layui-upload-button">
                             <form target="layui-upload-iframe" method="get" key="set-mine" enctype="multipart/form-data" action="/test/upload.json">
-                                <input type="file" name="file" class="layui-upload-file" id="test">
+                                <input type="file" name="shopImg3" class="layui-upload-file" >
                             </form><span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span></div>
                     </div>
                 </div>
@@ -86,13 +86,13 @@
         <div class="layui-form-item">
             <label class="layui-form-label">门店电话</label>
             <div class="layui-input-block">
-                <input type="text" name="" placeholder="请输入门店电话" autocomplete="off" class="layui-input">
+                <input type="text" name="phone" placeholder="请输入门店电话" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">门店地址</label>
             <div class="layui-input-block">
-                <input type="text" name="" placeholder="请输入门店地址" autocomplete="off" class="layui-input">
+                <input type="text" name="address" placeholder="请输入门店地址" autocomplete="off" class="layui-input">
                 <div class="map">
                     <div class="tips">
                         <span>如果您认为定位有误，请修改“详细地址”或”拖动地图”调整位置并保存。</span>
@@ -112,9 +112,21 @@
     </div>
     <script src="../lib/layui/build/layui.js"></script>
     <script>
-    layui.use(['layer', 'form'], function() {
+    layui.use(['layer', 'form', 'upload'], function() {
         var layer = layui.layer,
-            form = layui.form();
+            form = layui.form(),
+            $ = layui.jquery;
+
+        layui.upload({
+            url: './data/imgdata.json',
+            ext: 'jpg|png',
+            success: function(result, input) {
+                // 拿到uri，新建hidden标签
+                $(input).attr('value', result.uri);
+                console.log('end');
+            }
+        })
+
 
         layer.msg('Hello World ltq!!!');
     });
