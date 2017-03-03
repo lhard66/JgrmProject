@@ -32,13 +32,12 @@
 	top: 0;
 	right: -30px;
 }
-
+.header>.step>div:last-child::after{
+	border-left-color: transparent;
+}
 .header>.tips{
 	padding: 15px 5px;
 }
 .layui-btn{
 	background-color: #009DDA;
-}
-.layui-input-block{
-	/*margin-left: 450px;*/
 }
