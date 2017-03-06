@@ -40,6 +40,7 @@
                     <label class="layui-form-label">门店logo</label>
                     <div class="layui-input-block">
                         <div class="car-upload">
+                            <img id="logo_upload" src="./imgs/guitar.png">
                             <div class="car-upbar">
                                 <input type="file" id="logo" accept="image/png,image/gif" class="layui-upload-file">
                                 <input type="hidden" name="logo" />
@@ -51,7 +52,12 @@
                     <label class="layui-form-label">店招图片</label>
                     <div class="layui-input-block">
                         <input type="file" id="shopImg" accept="image/png,image/gif" class="layui-upload-file">
-                        <input type="hidden" name="shopImg" />
+                    </div>
+                    <div class="layui-input-block">
+                        <div class="img-container">
+                            <img src="./imgs/guitar.png" alt="">
+                            <i class="layui-icon">&#xe640;</i>
+                        </div>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -66,7 +72,7 @@
                         <input type="text" name="address" placeholder="请输入门店地址" autocomplete="off" class="layui-input">
                         <div class="map">
                             <div class="tips">
-                                <span>如果您认为定位有误，请修改“详细地址”或”拖动地图”调整位置并保存。</span>
+                                <span>如果您认为定位有误，请单击地图设置详细店铺位置。<i>注意：若定位准确无需设置。</i></span>
                             </div>
                             <input type="hidden" id="lng" name="lng" value="113.677942">
                             <input type="hidden" id="lat" name="lat" value="34.767232">
@@ -83,20 +89,40 @@
             </form>
         </div>
     </div>
+    <!-- <script src="http://code.jquery.com/jquery-latest.js"></script> -->
     <script src="../lib/layui/build/layui.js"></script>
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=cd617da39e3c8bfcf128d433f3afc8d8&plugin=AMap.Autocomplete"></script>
     <script>
     layui.use(['layer', 'form', 'upload'], function() {
         var layer = layui.layer,
             form = layui.form(),
             $ = layui.jquery;
-
+        //logo图片
         layui.upload({
+            elem: '#logo',
             url: './data/imgdata.json',
             ext: 'jpg|png',
             success: function(result, input) {
-                var name = $(input).attr('id')
-                $('input[name=' + name + ']').val(result.uri);
-                console.log('end');
+                $('#logo_upload').attr('src', './imgs/bmw.jpg');
+            }
+        });
+        //注册点击图片上的X，删除对应的图片的方法。        
+        function delImg(){
+            console.log(1111);
+        }
+        //店铺图片
+        layui.upload({
+            elem: '#shopImg',
+            url: './data/imgdata.json',
+            ext: 'jpg|png',
+            success: function(result, input) {
+                //添加图片                
+                var imgHtml = '<div class="img-container"><img src="./imgs/guitar.png" alt=""><i class="layui-icon">&#xe640;</i></div>';
+                var imgObj= $(input).parents('.layui-input-block').next('.layui-input-block').append(imgHtml);
+                imgObj.on('click',function(){
+                    console.log($(this));
+                });
+
             }
         });
         //地图部分
@@ -125,7 +151,7 @@
                     // 设置label标签
                     marker.setLabel({ //label默认蓝框白底左上角显示，样式className为：amap-marker-label
                         offset: new AMap.Pixel(20, -20), //修改label相对于maker的位置
-                        content: "单击鼠标左键设置您的店铺地址"
+                        content: "单击设置店铺地址"
                     });
                     marker.setMap(map);
                 });
@@ -158,39 +184,6 @@
         });
 
     });
-    </script>
-    <!-- 地图部分 -->
-    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=cd617da39e3c8bfcf128d433f3afc8d8&plugin=AMap.Autocomplete"></script>
-    <script type="text/javascript">
-    //为地图注册click事件获取鼠标点击出的经纬度坐标
-    // var clickEventListener = map.on('click', function(e) {
-    //     $('#lng').val(e.lnglat.getLng());
-    //     $('#lat').val(e.lnglat.getLat());
-    //     //document.getElementById("lat").value = e.lnglat.getLat();
-    //     if (marker) {
-    //         marker.setMap(null);
-    //         marker = null;
-    //     }
-    //     marker = new AMap.Marker({
-    //         icon: "${ctx}/static/images/mark_b.png",
-    //         position: [e.lnglat.getLng(), e.lnglat.getLat()]
-    //     });
-    //     marker.setMap(map);
-    // });
-
-    // marker = new AMap.Marker({
-    //     icon: "./imgs/mark.png",
-    //     position: [$('#lng').val(), $('#lat').val()]
-    // });
-    // marker.setMap(map);
-
-    // AMap.event.addListener(map, "select", select); //注册监听，当选中某条记录时会触发
-    // function select(e) {
-    //     if (e.poi && e.poi.location) {
-    //         map.setZoom(15);
-    //         map.setCenter(e.poi.location);
-    //     }
-    // }
     </script>
 </body>
 

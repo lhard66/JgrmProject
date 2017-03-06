@@ -1,16 +1,13 @@
 .header>.step>div:nth-child(2) {
     background-color: #009DDA;
 }
-
 .header>.step>div:nth-child(2)::before {
     border-color: #009DDA;
     border-left-color: transparent;
 }
-
 .header>.step>div:nth-child(2)::after {
     border-left-color: #009DDA;
 }
-
 .car-upload {
     position: relative;
     background: #e2e2e2;
@@ -19,33 +16,54 @@
     border-radius: 100%;
     float: left;
 }
-
 .car-upload img {
     width: 200px;
     height: 200px;
     border-radius: 100%;
 }
-
+.img-container>img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+.img-container {
+    width: 100px;
+    height: 100px;
+    margin: 5px;
+    float: left;
+    position: relative;
+}
+.img-container>i {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 25px;
+    cursor: pointer;
+}
 img {
     display: inline-block;
     border: none;
 }
-
 .car-upload .car-upbar {
     position: absolute;
     top: 50%;
     left: 50%;
     margin: -18px 0 0 -56px;
 }
-
 .car-upload .layui-upload-button {
     background-color: rgba(0, 0, 0, .2);
     color: rgba(255, 255, 255, 1);
 }
-.map>.shop-map{
-	height: 400px;
-	background-color: #F7F6F1;
+.map>.shop-map {
+    height: 400px;
+    background-color: #F7F6F1;
 }
 .map>.tips {
     padding: 6px 0;
+}
+.tips i {
+    font-style: normal;
+    text-decoration: none;
+    color: red;
 }
