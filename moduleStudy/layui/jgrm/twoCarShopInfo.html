@@ -40,75 +40,48 @@
                     <label class="layui-form-label">门店logo</label>
                     <div class="layui-input-block">
                         <div class="car-upload">
-                            <img id="LAY_demo_upload" src="./imgs/guitar.png">
                             <div class="car-upbar">
-                                <div class="layui-box layui-upload-button">
-                                    <form target="layui-upload-iframe" method="get" key="set-mine" enctype="multipart/form-data">
-                                        <input type="file" name="logo" accept="image/png,image/gif" class="layui-upload-file">
-                                    </form><span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span></div>
+                                <input type="file" id="logo" accept="image/png,image/gif" class="layui-upload-file">
+                                <input type="hidden" name="logo" />
                             </div>
                         </div>
                     </div>
                 </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">店招图片</label>
-            <div class="layui-input-block">
-                <div class="car-upload">
-                    <img id="LAY_demo_upload" src="./imgs/guitar.png">
-                    <div class="car-upbar">
-                        <div class="layui-box layui-upload-button">
-                            <form target="layui-upload-iframe" method="get" key="set-mine" enctype="multipart/form-data" action="/test/upload.json">
-                                <input type="file" name="shopImg1" class="layui-upload-file" >
-                            </form><span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span></div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">店招图片</label>
+                    <div class="layui-input-block">
+                        <input type="file" id="shopImg" accept="image/png,image/gif" class="layui-upload-file">
+                        <input type="hidden" name="shopImg" />
                     </div>
                 </div>
-                <div class="car-upload">
-                    <img id="LAY_demo_upload" src="./imgs/guitar.png">
-                    <div class="car-upbar">
-                        <div class="layui-box layui-upload-button">
-                            <form target="layui-upload-iframe" method="get" key="set-mine" enctype="multipart/form-data" action="/test/upload.json">
-                                <input type="file" name="shopImg2" class="layui-upload-file" >
-                            </form><span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span></div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">门店电话</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="phone" placeholder="请输入门店电话" autocomplete="off" class="layui-input">
                     </div>
                 </div>
-                <div class="car-upload">
-                    <img id="LAY_demo_upload" src="./imgs/guitar.png">
-                    <div class="car-upbar">
-                        <div class="layui-box layui-upload-button">
-                            <form target="layui-upload-iframe" method="get" key="set-mine" enctype="multipart/form-data" action="/test/upload.json">
-                                <input type="file" name="shopImg3" class="layui-upload-file" >
-                            </form><span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span></div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">门店地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="address" placeholder="请输入门店地址" autocomplete="off" class="layui-input">
+                        <div class="map">
+                            <div class="tips">
+                                <span>如果您认为定位有误，请修改“详细地址”或”拖动地图”调整位置并保存。</span>
+                            </div>
+                            <input type="hidden" id="lng" name="lng" value="113.677942">
+                            <input type="hidden" id="lat" name="lat" value="34.767232">
+                            <div class="shop-map" id="map_container">
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">门店电话</label>
-            <div class="layui-input-block">
-                <input type="text" name="phone" placeholder="请输入门店电话" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">门店地址</label>
-            <div class="layui-input-block">
-                <input type="text" name="address" placeholder="请输入门店地址" autocomplete="off" class="layui-input">
-                <div class="map">
-                    <div class="tips">
-                        <span>如果您认为定位有误，请修改“详细地址”或”拖动地图”调整位置并保存。</span>
-                    </div>
-                    <div class="shop-map">
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="next">保存并进行下一步</button>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
-        <div class="layui-form-item">
-            <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="*">保存并进行下一步</button>
-            </div>
-        </div>
-        </form>
-    </div>
     </div>
     <script src="../lib/layui/build/layui.js"></script>
     <script>
@@ -121,15 +94,103 @@
             url: './data/imgdata.json',
             ext: 'jpg|png',
             success: function(result, input) {
-                // 拿到uri，新建hidden标签
-                $(input).attr('value', result.uri);
+                var name = $(input).attr('id')
+                $('input[name=' + name + ']').val(result.uri);
                 console.log('end');
             }
-        })
+        });
+        //地图部分
+        var map = new AMap.Map("map_container", {
+            resizeEnable: true,
+            zoom: 15,
+        });
+
+        var marker = new AMap.Marker({
+            icon: "./imgs/mark.png",
+            position: [$('#lng').val(), $('#lat').val()]
+        });
+
+        AMap.plugin(['AMap.ToolBar', 'AMap.Geolocation'],
+            function() {
+                map.addControl(new AMap.ToolBar());
+
+                geolocation = new AMap.Geolocation({
+                    buttonPosition: 'LB'
+                });
+                map.addControl(geolocation);
+                geolocation.getCurrentPosition();
+                AMap.event.addListener(geolocation, 'complete', function(data) {
+                    marker.setPosition([data.position.getLng(), data.position.getLat()]);
+                    marker.setAnimation('AMAP_ANIMATION_BOUNCE');
+                    // 设置label标签
+                    marker.setLabel({ //label默认蓝框白底左上角显示，样式className为：amap-marker-label
+                        offset: new AMap.Pixel(20, -20), //修改label相对于maker的位置
+                        content: "单击鼠标左键设置您的店铺地址"
+                    });
+                    marker.setMap(map);
+                });
+                //返回定位出错信息
+                AMap.event.addListener(geolocation, 'error', function() {
+                    console.log('error location');
+                });
+            });
 
 
-        layer.msg('Hello World ltq!!!');
+        //为地图注册click事件获取鼠标点击出的经纬度坐标
+        var clickEventListener = map.on('click', function(e) {
+            $('#lng').val(e.lnglat.getLng());
+            $('#lat').val(e.lnglat.getLat());
+            if (marker) {
+                marker.setMap(null);
+                marker = null;
+            }
+            marker = new AMap.Marker({
+                icon: "./imgs/mark.png",
+                position: [e.lnglat.getLng(), e.lnglat.getLat()]
+            });
+            marker.setMap(map);
+        });
+        //地图部分结束
+        form.on('submit(next)', function(data) {
+            console.log(JSON.stringify(data.field));
+            console.log(map.getZoom());
+            return false;
+        });
+
     });
+    </script>
+    <!-- 地图部分 -->
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=cd617da39e3c8bfcf128d433f3afc8d8&plugin=AMap.Autocomplete"></script>
+    <script type="text/javascript">
+    //为地图注册click事件获取鼠标点击出的经纬度坐标
+    // var clickEventListener = map.on('click', function(e) {
+    //     $('#lng').val(e.lnglat.getLng());
+    //     $('#lat').val(e.lnglat.getLat());
+    //     //document.getElementById("lat").value = e.lnglat.getLat();
+    //     if (marker) {
+    //         marker.setMap(null);
+    //         marker = null;
+    //     }
+    //     marker = new AMap.Marker({
+    //         icon: "${ctx}/static/images/mark_b.png",
+    //         position: [e.lnglat.getLng(), e.lnglat.getLat()]
+    //     });
+    //     marker.setMap(map);
+    // });
+
+    // marker = new AMap.Marker({
+    //     icon: "./imgs/mark.png",
+    //     position: [$('#lng').val(), $('#lat').val()]
+    // });
+    // marker.setMap(map);
+
+    // AMap.event.addListener(map, "select", select); //注册监听，当选中某条记录时会触发
+    // function select(e) {
+    //     if (e.poi && e.poi.location) {
+    //         map.setZoom(15);
+    //         map.setCenter(e.poi.location);
+    //     }
+    // }
     </script>
 </body>
 
