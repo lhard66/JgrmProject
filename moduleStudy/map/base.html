@@ -1,0 +1,58 @@
+<!doctype html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <style type="text/css">
+    body,
+    html,
+    #container {
+        height: 100%;
+        margin: 0px;
+    }
+    </style>
+    <title>快速入门</title>
+</head>
+
+<body>
+    <div id="container" tabindex="0"></div>
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=cd617da39e3c8bfcf128d433f3afc8d8"></script>
+    <script type="text/javascript">
+    var map = new AMap.Map('container', {
+        resizeEnable: true,
+        // zoom: 15,
+        // center: [113.42, 34.44]
+    });
+
+    map.plugin(['AMap.ToolBar', 'AMap.Scale', 'AMap.OverView', 'AMap.MapType', 'AMap.Geolocation'],
+        function() {
+            map.addControl(new AMap.ToolBar());
+            map.addControl(new AMap.MapType());
+
+            map.addControl(new AMap.Scale());
+
+            map.addControl(new AMap.OverView({
+                isOpen: false
+            }));
+            //定位服务
+            geolocation = new AMap.Geolocation({
+                buttonPosition: 'LB'
+            });
+            mapObj.addControl(geolocation);
+            geolocation.getCurrentPosition();
+        });
+
+    // var marker = new AMap.Marker({
+    //     position: [113.42, 34.44], //marker所在的位置
+    //     map: map //创建时直接赋予map属性
+    // });
+    //也可以在创建完成后通过setMap方法执行地图对象
+    // marker.setMap(map);
+
+    map.setMapStyle('fresh');
+    // map.setFeatures("building");//单一种类要素显示
+    </script>
+</body>
+
+</html>
