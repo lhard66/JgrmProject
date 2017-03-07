@@ -16,7 +16,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">审核状态：</label>
                     <div class="layui-input-block">
-                        <label class="layui-form-label" style="text-align: left;">未通过</label>
+                        <label class="layui-form-label" id="state" style="text-align: left;color:red;">未通过</label>
                         <a href="javascript:void(0)" id="showMsg" class="layui-btn layui-btn-normal">查看留言</a>
                     </div>
                 </div>
@@ -50,8 +50,6 @@
 
         var editor = new wangEditor('editor');
         editor.create();
-        console.log(editor.$txt.html());
-
 
         $('#showMsg').on('click', function() {
             var msg = '留言信息获取异常';
@@ -80,6 +78,13 @@
                 if (editor.$txt.text().length < 200) {
                     return "服务标准内容至少要大于200字！";
                 }
+            }
+        });
+        //异步拿去数据，并赋值给界面中
+        $.get('./data/commonData.json', function(result) {
+            if (result) {
+                $('#state').text('通过');
+                $('#editor').append('<p>请输入内容...</p>');
             }
         });
     });
