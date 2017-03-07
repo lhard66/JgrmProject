@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>修改初始密码</title>
+    <link rel="stylesheet" href="../lib/layui/build/css/layui.css">
+</head>
+
+<body>
+    <div class="layout">
+        <div class="content" action="#" method="post">
+            <form class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">审核状态：</label>
+                    <div class="layui-input-block">
+                        <label class="layui-form-label" style="text-align: left;">未通过</label>
+                        <a href="javascript:void(0)" id="showMsg" class="layui-btn layui-btn-normal">查看留言</a>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">服务标准：</label>
+                    <div class="layui-input-block">
+                        <area id="serviceDesc" style="display:none;">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="next">保存内容</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="../lib/layui/build/layui.js"></script>
+    <script>
+    layui.use(['layer', 'form', 'layedit'], function() {
+        var layer = layui.layer,
+            form = layui.form(),
+            layedit = layui.layedit,
+            $ = layui.jquery;
+
+        layedit.build('serviceDesc');
+        //配置上传图片接口
+
+        $('#showMsg').on('click', function() {
+            //请示留言数据，并显示。
+            layer.open({
+                title: '留言',
+                content: '留言信息，留言信息，留言信息留言信息留言信息留言信息。'
+            });
+
+        });
+
+    });
+    </script>
+    <script>
+    </script>
+</body>
+
+</html>
