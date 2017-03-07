@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>修改初始密码</title>
+    <link rel="stylesheet" href="/node_modules/wangeditor/dist/css/wangEditor.css">
     <link rel="stylesheet" href="../lib/layui/build/css/layui.css">
 </head>
 
@@ -22,7 +23,11 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">服务标准：</label>
                     <div class="layui-input-block">
-                        <area id="serviceDesc" style="display:none;">
+                        <div class="editor-container">
+                            <div id="editor" style="height:400px;" lay-verify="no_empty">
+                                <p>请输入内容...</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -33,26 +38,50 @@
             </form>
         </div>
     </div>
+    <script src="/node_modules/wangeditor/dist/js/lib/jquery-2.2.1.js"></script>
     <script src="../lib/layui/build/layui.js"></script>
+    <script src="/node_modules/wangeditor/dist/js/wangEditor.js"></script>
     <script>
-    layui.use(['layer', 'form', 'layedit'], function() {
+    var test;
+    layui.use(['layer', 'form'], function() {
         var layer = layui.layer,
             form = layui.form(),
-            layedit = layui.layedit,
             $ = layui.jquery;
 
-        layedit.build('serviceDesc');
-        //配置上传图片接口
+        var editor = new wangEditor('editor');
+        editor.create();
+        console.log(editor.$txt.html());
+
 
         $('#showMsg').on('click', function() {
-            //请示留言数据，并显示。
-            layer.open({
-                title: '留言',
-                content: '留言信息，留言信息，留言信息留言信息留言信息留言信息。'
-            });
+            var msg = '留言信息获取异常';
+            $.get('./data/commonData.json', function(result) {
+                layer.open({
+                    title: '留言',
+                    content: result.state
+                });
+            })
 
         });
 
+        form.on('submit(next)', function(data) {
+            var content = editor.$txt.html();
+            if (content) {
+                $.post('./data/commonData.json', {
+                    content: content
+                }, function(result) {
+                    console.log(result);
+                });
+            }
+            return false;
+        });
+        form.verify({
+            no_empty: function() {
+                if (editor.$txt.text().length < 200) {
+                    return "服务标准内容至少要大于200字！";
+                }
+            }
+        });
     });
     </script>
     <script>

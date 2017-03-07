@@ -22,7 +22,7 @@
     "underscore": "^1.8.3",
     "vue": "^2.1.10",
     "vuex": "^2.1.3",
-    "wangeditor": "^2.1.22",
+    "wangeditor": "^2.1.23",
     "weui": "^1.1.1",
     "weui.js": "^1.1.0"
   }
