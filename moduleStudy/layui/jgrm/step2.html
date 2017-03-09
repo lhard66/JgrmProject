@@ -106,6 +106,7 @@
     <script src="./vue-uploader/vue-uploader2.js"></script>
     <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=cd617da39e3c8bfcf128d433f3afc8d8&plugin=AMap.Autocomplete"></script>
     <script>
+    var test;
     layui.use(['layer', 'form', 'upload'], function() {
         var layer = layui.layer,
             form = layui.form(),
@@ -118,7 +119,6 @@
             },
             data: function() {
                 return {
-                    files: [],
                     uploader_logo: {
                         files: [],
                         maxFiles: 1,
@@ -163,7 +163,6 @@
                         }
                     },
                     uploader_shop: {
-                        files: [],
                         maxFiles: 8,
                         maxFileSize: 1024 * 1024 * 1,
                         // 上传前都获取一个新的上传token，有效期1小时
@@ -262,8 +261,12 @@
         });
         //地图部分结束
         form.on('submit(next)', function(data) {
-            console.log(JSON.stringify(data.field));
-            console.log(map.getZoom());
+            var formdata = $('form').serialize();
+            if (formdata) {
+                $.post('./data/commonData.json',formdata,function(data){
+                    console.log(data);
+                });
+            }
             return false;
         });
 
