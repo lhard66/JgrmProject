@@ -1,12 +1,12 @@
 .header>.step>div:nth-child(2) {
-    background-color: #009DDA;
+    background-color: #1AB394;
 }
 .header>.step>div:nth-child(2)::before {
-    border-color: #009DDA;
+    border-color: #1AB394;
     border-left-color: transparent;
 }
 .header>.step>div:nth-child(2)::after {
-    border-left-color: #009DDA;
+    border-left-color: #1AB394;
 }
 .car-upload {
     position: relative;
@@ -56,7 +56,7 @@ img {
     color: rgba(255, 255, 255, 1);
 }
 .map>.shop-map {
-    height: 400px;
+    height: 350px;
     background-color: #F7F6F1;
 }
 .map>.tips {

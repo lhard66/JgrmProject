@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>修改初始密码</title>
+    <link rel="stylesheet" href="../lib/layui/build/css/layui.css">
+    <link rel="stylesheet" href="./css/guide.css">
+    <style>
+    .header>.step>div:nth-child(3) {
+        background-color: #1AB394;
+    }
+    
+    .header>.step>div:nth-child(3)::before {
+        border-color: #1AB394;
+        border-left-color: transparent;
+    }
+    
+    .header>.step>div:nth-child(3)::after {
+        border-left-color: #1AB394;
+    }
+    
+    .layui-input-block {
+        margin-left: 450px;
+    }
+    
+    .main>.content {
+        padding: 10px 70px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <div class="topbar">
+            <div class="topbar-main">
+                <div class="sitename">
+                    <a class="logo" href="/">
+                        <img src="./imgs/jgrm_logo.png" alt="logo">
+                    </a>
+                </div>
+                <div class="username">
+                    <div class="userlogo">
+                        <!-- <img src="./imgs/guitar.png" alt=""> -->
+                    </div>
+                    <div class="usernick">
+                        <span>13888888888</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main">
+            <div class="header">
+                <div class="step">
+                    <div class="step-one">
+                        <span>1.修改初始密码</span>
+                    </div>
+                    <div class="step-two">
+                        <span>2.设置页面信息</span>
+                    </div>
+                    <div class="three">
+                        <span>3.完成门店初始化</span>
+                    </div>
+                </div>
+                <div class="tips">
+                    <span>首次登录，您需要完成一些基本设置以初始化您的门店。第一步，修改您登录系统的初始密码。</span>
+                </div>
+            </div>
+            <div class="content">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <img src="./imgs/know.png" alt="">
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="*">我知道了</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <span>版权所有 © Copyright © 2014-2017 河南交广融媒文化传播有限公司 All Rights Reserved. 豫ICP备15036742号-1</span>
+    </div>
+    </div>
+    <script src="../lib/layui/build/layui.js"></script>
+    <script>
+    layui.use(['layer', 'form'], function() {
+        var layer = layui.layer,
+            form = layui.form();
+
+        layer.msg('Hello World ltq!!!');
+    });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>修改初始密码</title>
+    <link rel="stylesheet" href="../lib/layui/build/css/layui.css">
+    <link rel="stylesheet" href="./css/guide.css">
+    <style>
+    .header>.step>div:nth-child(1) {
+        background-color: #1AB394;
+    }
+    
+    .header>.step>div:nth-child(1)::before {
+        border-color: #1AB394;
+        border-left-color: transparent;
+    }
+    
+    .header>.step>div:nth-child(1)::after {
+        border-left-color: #1AB394;
+    }    
+    .footer{
+        height: 30px;
+        text-align: center;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <div class="topbar">
+            <div class="topbar-main">
+                <div class="sitename">
+                    <a class="logo" href="/">
+                        <img src="./imgs/jgrm_logo.png" alt="logo">
+                    </a>
+                </div>
+                <div class="username">
+                    <div class="userlogo">
+                        <!-- <img src="./imgs/guitar.png" alt=""> -->
+                    </div>
+                    <div class="usernick">
+                        <span>13888888888</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main">
+            <div class="header">
+                <div class="step">
+                    <div class="step-one">
+                        <span>1.修改初始密码</span>
+                    </div>
+                    <div class="step-two">
+                        <span>2.设置页面信息</span>
+                    </div>
+                    <div class="three">
+                        <span>3.完成门店初始化</span>
+                    </div>
+                </div>
+                <div class="tips">
+                    <span>首次登录，您需要完成一些基本设置以初始化您的门店。第一步，修改您登录系统的初始密码。</span>
+                </div>
+            </div>
+            <div class="content" action="#" method="post">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">原密码</label>
+                        <div class="layui-input-block">
+                            <input type="password" name="oldPass" placeholder="请输入原密码" required autocomplete="off" lay-verify="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">新密码</label>
+                        <div class="layui-input-block">
+                            <input type="password" id="new_pass" name="newPass" placeholder="请输入新密码" required autocomplete="off" lay-verify="required|consistent|lenpwd" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">确认密码</label>
+                        <div class="layui-input-block">
+                            <input type="password" id="again_pass" placeholder="请再次输入新密码" required autocomplete="off" lay-verify="required|consistent|lenpwd" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="next">保存并进行下一步</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="footer">
+            <span>版权所有 © Copyright © 2014-2017 河南交广融媒文化传播有限公司 All Rights Reserved. 豫ICP备15036742号-1</span>
+        </div>
+    </div>
+    <script src="../lib/layui/build/layui.js"></script>
+    <script>
+    layui.use(['layer', 'form'], function() {
+        var layer = layui.layer,
+            form = layui.form(),
+            $ = layui.jquery;
+
+        form.on('submit(next)', function(data) {
+            console.log(JSON.stringify(data.field));
+            $.ajax({
+                method: "POST",
+                url: "./data/firstData.json",
+                data: JSON.stringify(data.field),
+                dataType: "text"
+            }).done(function(result) {
+                if (result == 'success') {
+                    // document.location = './twoCarShopInfo.html';
+                } else {
+                    layer.alert('修改失败，请刷新网页后重试！');
+                }
+            });
+            return false;
+        });
+        form.verify({
+            consistent: function() {
+                if ($('#new_pass').val() != $('#again_pass').val()) {
+                    return '两次密码输入不一致';
+                }
+            },
+            lenpwd: function(value) {
+                if (value.length < 6) {
+                    return '密码至少为6位';
+                }
+            }
+        });
+
+    });
+    </script>
+</body>
+
+</html>

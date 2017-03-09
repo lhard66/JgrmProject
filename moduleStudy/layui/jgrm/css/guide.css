@@ -1,43 +1,106 @@
-.layout{
-	margin: 20px 40px;
+.topbar {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 65px;
+    border-bottom: 1px solid #2F4056;
+    background-color: #2F4056;
+    color: #fff;
+    margin-bottom: 10px;
+    overflow: hidden;
 }
-.header>.step{
-	overflow: hidden;
+.topbar>.topbar-main {
+    margin: 0 auto;
+    max-width: 998px;
+    position: relative;
+    height: 65px;
 }
-.header>.step>div{
-	float: left;
-	height: 30px;
-	width: 120px;
-	line-height: 30px;
-	text-align: center;
-	color: #FFF;
-	background-color: #999999;
-	padding: 0 10px;
-	margin-right: 50px;
-	position: relative;
+.topbar-main>.sitename {
+    float: left;
 }
-.header>.step>div::before{
-	content: "";
+.topbar-main .logo {
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+.main {
+    margin: 90px auto;
+    max-width: 680px;
+}
+.main>.content {
+    padding: 10px 30px;
+}
+.topbar-main>.username {
+    float: right;
+    position: relative;
+}
+.username>.userlogo {
+    position: absolute;
+    top: 7px;
+    right: 100px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    background: url(../imgs/guitar.png) 0 0/50px 50px no-repeat;
+}
+.username .userlogo>img {
+    width: 50px;
+    height: 50px;
+}
+.username>.usernick {
+    position: absolute;
+    top: 25px;
+    right: 2px;
+}
+.header>.step {
+    overflow: hidden;
+    width: 530px;
+    margin: 0 auto;
+}
+.header>.step>div {
+    float: left;
+    height: 30px;
+    width: 120px;
+    line-height: 30px;
+    text-align: center;
+    color: #FFF;
+    background-color: #999999;
+    padding: 0 10px;
+    margin-right: 50px;
+    position: relative;
+}
+.header>.step>div::before {
+    content: "";
     border: 15px solid #999999;
     border-left-color: transparent;
     position: absolute;
     top: 0;
     left: -30px;
 }
-.header>.step>div::after{
-	content: "";
-	border: 15px solid transparent;
-	border-left-color: #999999;
-	position: absolute;
-	top: 0;
-	right: -30px;
+.header>.step>div::after {
+    content: "";
+    border: 15px solid transparent;
+    border-left-color: #999999;
+    position: absolute;
+    top: 0;
+    right: -30px;
 }
-.header>.step>div:last-child::after{
-	border-left-color: transparent;
+.header>.step>div:last-child {
+    margin-right: 0;
 }
-.header>.tips{
-	padding: 15px 5px;
+.header>.step>div:last-child::after {
+    border-left-color: transparent;
 }
-.layui-btn{
-	background-color: #009DDA;
+.header>.tips {
+    padding: 15px 5px 15px 75px;
+}
+.layui-btn {
+    background-color: #1AB394;
+}
+.footer {
+    height: 60px;
+    text-align: center;
+    vertical-align: middle;
 }
