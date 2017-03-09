@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+    <meta charset="utf-8">
+    <title>jgrm上传图片控件使用</title>
+    <link rel="stylesheet" href="./vue/vue-uploader2.css">
+    <script src="./vue/vue.js"></script>
+    <script src="./vue/vue-uploader2.js"></script>
+    <script src="/node_modules/jquery/dist/jquery.js"></script>
+</head>
+
+<body>
+    <div class="layout" id="app">
+        <div class="single">
+            <uploader :config="uploader1" name="logo"></uploader>
+            <input type="hidden" id="logo_check" />
+        </div>
+    </div>
+    <script type="text/javascript">    
+    var vm = new Vue({
+        el: '#app',        
+        components: {
+            'uploader': VueUploader
+        },
+        data: function() {
+            return {
+                files: [],
+                uploader1: {
+                    files: [],
+                    maxFiles: 6,
+                    maxFileSize: 1024 * 1024 * 1,
+                    // 上传前都获取一个新的上传token，有效期1小时
+                    beforeUpload: function(resolve) {
+
+                        // 获取token接口
+                        var url = window.location.origin + '/Radio/resource/cloud/bulk/gettoken';
+                        $.getJSON(url, function(result) {
+                            if (result.token) {
+                                resolve({
+                                    token: result.token
+                                })
+                            } else {
+                                alert('上传失败', result.msg)
+                            }
+                        }).fail(function(e, type, msg) {
+                            alert(type + msg)
+                        })
+                    },
+                    uploadUrl: 'http://upload.qiniu.com',
+                    onUploaded: function(result) {
+                        return result.key
+                    },
+                    onAdd: function(value) {
+                        console.log(value)
+                    },
+                    onError: function(err) {
+                        console.error(err)
+                    },
+                    onClick: function(item) {
+                        console.log(item.file)
+                    },
+                    onRemove: function(file) {
+                        //TODO 
+                    },
+                    showImage: function(img) {
+                        if (/^(http(s)?|\/\/)/.test(img)) return img;
+                        if (/^data/.test(img)) return img;
+                        return 'http://pic.jgrm.net/' + img + '_xlogo';
+                    }
+                },                
+            }
+        }
+    });
+    </script>
+</body>
+
+</html>
