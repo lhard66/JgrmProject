@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../lib/layui/build/css/layui.css">
     <link rel="stylesheet" href="./css/guide.css">
     <link rel="stylesheet" href="css/twoCarShop.css">
+    <link rel="stylesheet" href="./vue-uploader/vue-uploader2.css">
 </head>
 
 <body>
@@ -46,7 +47,7 @@
                     <span>首次登录，您需要完成一些基本设置以初始化您的门店。第一步，修改您登录系统的初始密码。</span>
                 </div>
             </div>
-            <div class="content">
+            <div class="content" id="app">
                 <form class="layui-form">
                     <div class="layui-form-item">
                         <label class="layui-form-label">门店名称</label>
@@ -57,25 +58,13 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">门店logo</label>
                         <div class="layui-input-block">
-                            <div class="car-upload">
-                                <img id="logo_upload" src="./imgs/guitar.png">
-                                <div class="car-upbar">
-                                    <input type="file" id="logo" accept="image/png,image/gif" class="layui-upload-file">
-                                    <input type="hidden" name="logo" />
-                                </div>
-                            </div>
+                            <uploader :config="uploader_logo" name="logoImg"></uploader>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">店招图片</label>
                         <div class="layui-input-block">
-                            <input type="file" id="shopImg" accept="image/png,image/gif" class="layui-upload-file">
-                        </div>
-                        <div class="layui-input-block">
-                            <div class="img-container">
-                                <img src="./imgs/guitar.png" alt="">
-                                <i class="layui-icon">&#xe640;</i>
-                            </div>
+                            <uploader :config="uploader_shop" name="shopImg"></uploader>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -113,40 +102,113 @@
     </div>
     <!-- <script src="http://code.jquery.com/jquery-latest.js"></script> -->
     <script src="../lib/layui/build/layui.js"></script>
+    <script src="./vue-uploader/vue.js"></script>
+    <script src="./vue-uploader/vue-uploader2.js"></script>
     <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=cd617da39e3c8bfcf128d433f3afc8d8&plugin=AMap.Autocomplete"></script>
     <script>
     layui.use(['layer', 'form', 'upload'], function() {
         var layer = layui.layer,
             form = layui.form(),
             $ = layui.jquery;
-        //logo图片
-        layui.upload({
-            elem: '#logo',
-            url: './data/imgdata.json',
-            ext: 'jpg|png',
-            success: function(result, input) {
-                $('#logo_upload').attr('src', './imgs/bmw.jpg');
-            }
-        });
-        //注册点击图片上的X，删除对应的图片的方法。        
-        function delImg() {
-            console.log(1111);
-        }
-        //店铺图片
-        layui.upload({
-            elem: '#shopImg',
-            url: './data/imgdata.json',
-            ext: 'jpg|png',
-            success: function(result, input) {
-                //添加图片                
-                var imgHtml = '<div class="img-container"><img src="./imgs/guitar.png" alt=""><i class="layui-icon">&#xe640;</i></div>';
-                var imgObj = $(input).parents('.layui-input-block').next('.layui-input-block').append(imgHtml);
-                imgObj.on('click', function() {
-                    console.log($(this));
-                });
+        //上传图片
+        var vm = new Vue({
+            el: '#app',
+            components: {
+                'uploader': VueUploader
+            },
+            data: function() {
+                return {
+                    files: [],
+                    uploader_logo: {
+                        files: [],
+                        maxFiles: 1,
+                        maxFileSize: 1024 * 1024 * 1,
+                        // 上传前都获取一个新的上传token，有效期1小时
+                        beforeUpload: function(resolve) {
 
+                            // 获取token接口
+                            var url = window.location.origin + '/Radio/resource/cloud/bulk/gettoken';
+                            $.getJSON(url, function(result) {
+                                if (result.token) {
+                                    resolve({
+                                        token: result.token
+                                    })
+                                } else {
+                                    alert('上传失败', result.msg)
+                                }
+                            }).fail(function(e, type, msg) {
+                                alert(type + msg)
+                            })
+                        },
+                        uploadUrl: 'http://upload.qiniu.com',
+                        onUploaded: function(result) {
+                            return result.key
+                        },
+                        onAdd: function(value) {
+                            console.log(value)
+                        },
+                        onError: function(err) {
+                            console.error(err)
+                        },
+                        onClick: function(item) {
+                            console.log(item.file)
+                        },
+                        onRemove: function(file) {
+                            //TODO 
+                        },
+                        showImage: function(img) {
+                            if (/^(http(s)?|\/\/)/.test(img)) return img;
+                            if (/^data/.test(img)) return img;
+                            return 'http://pic.jgrm.net/' + img + '_xlogo';
+                        }
+                    },
+                    uploader_shop: {
+                        files: [],
+                        maxFiles: 8,
+                        maxFileSize: 1024 * 1024 * 1,
+                        // 上传前都获取一个新的上传token，有效期1小时
+                        beforeUpload: function(resolve) {
+
+                            // 获取token接口
+                            var url = window.location.origin + '/Radio/resource/cloud/bulk/gettoken';
+                            $.getJSON(url, function(result) {
+                                if (result.token) {
+                                    resolve({
+                                        token: result.token
+                                    })
+                                } else {
+                                    alert('上传失败', result.msg)
+                                }
+                            }).fail(function(e, type, msg) {
+                                alert(type + msg)
+                            })
+                        },
+                        uploadUrl: 'http://upload.qiniu.com',
+                        onUploaded: function(result) {
+                            return result.key
+                        },
+                        onAdd: function(value) {
+                            console.log(value)
+                        },
+                        onError: function(err) {
+                            console.error(err)
+                        },
+                        onClick: function(item) {
+                            console.log(item.file)
+                        },
+                        onRemove: function(file) {
+                            //TODO 
+                        },
+                        showImage: function(img) {
+                            if (/^(http(s)?|\/\/)/.test(img)) return img;
+                            if (/^data/.test(img)) return img;
+                            return 'http://pic.jgrm.net/' + img + '_xlogo';
+                        }
+                    }
+                }
             }
         });
+
         //地图部分
         var map = new AMap.Map("map_container", {
             resizeEnable: true,
