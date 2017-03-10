@@ -7,6 +7,15 @@
     <title>修改初始密码</title>
     <link rel="stylesheet" href="/node_modules/wangeditor/dist/css/wangEditor.css">
     <link rel="stylesheet" href="../lib/layui/build/css/layui.css">
+    <style>
+        .layout{
+            margin: 0 auto;
+            padding-top: 50px;
+        }
+        .layui-btn-normal{
+            background-color: #1AA094;
+        }
+    </style>
 </head>
 
 <body>
@@ -23,7 +32,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">服务标准：</label>
                     <div class="layui-input-block">
-                        <div class="editor-container">
+                        <div class="editor-container" style="width: 900px;">
                             <div id="editor" style="height:400px;" lay-verify="no_empty">
                                 <p>请输入内容...</p>
                             </div>
@@ -33,6 +42,7 @@
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button class="layui-btn" lay-submit lay-filter="next">保存内容</button>
+                        <button class="layui-btn" lay-submit lay-filter="next">提交审核</button>
                     </div>
                 </div>
             </form>

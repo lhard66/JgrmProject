@@ -52,16 +52,16 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">门店名称</label>
                         <div class="layui-input-block">
-                            <input type="text" name="title" placeholder="请输入门店名称" autocomplete="off" class="layui-input">
+                            <input type="text" name="title" lay-verify="required" placeholder="请输入门店名称" autocomplete="off" class="layui-input">
                         </div>
                     </div>
-                    <div class="layui-form-item">
+                    <div class="layui-form-item" lay-verify="logoEmpty">
                         <label class="layui-form-label">门店logo</label>
                         <div class="layui-input-block">
                             <uploader :config="uploader_logo" name="logoImg"></uploader>
                         </div>
                     </div>
-                    <div class="layui-form-item">
+                    <div class="layui-form-item" lay-verify="shopEmpty">
                         <label class="layui-form-label">店招图片</label>
                         <div class="layui-input-block">
                             <uploader :config="uploader_shop" name="shopImg"></uploader>
@@ -70,13 +70,13 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">门店电话</label>
                         <div class="layui-input-block">
-                            <input type="text" name="phone" placeholder="请输入门店电话" autocomplete="off" class="layui-input">
+                            <input type="text" name="phone" lay-verify="required" placeholder="请输入门店电话" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">门店地址</label>
                         <div class="layui-input-block">
-                            <input type="text" name="address" placeholder="请输入门店地址" autocomplete="off" class="layui-input">
+                            <input type="text" name="address" lay-verify="required" placeholder="请输入门店地址" autocomplete="off" class="layui-input">
                             <div class="map">
                                 <div class="tips">
                                     <span>如果您认为定位有误，请单击地图设置详细店铺位置。<i>注意：若定位准确无需设置。</i></span>
@@ -260,10 +260,27 @@
             marker.setMap(map);
         });
         //地图部分结束
+        //表单 
+        form.verify({
+            logoEmpty: function() {
+                var empty = $('input[name=logoImg]').val();
+                test = empty;
+                if (!empty) {
+                    return "门店LOGO不能为空！";
+                }
+            },
+            shopEmpty:function(){
+                var empty=$('input[name=shopImg]').val();
+                if(!empty){
+                    return "店招图片不能为空！";
+                }
+            }
+        });
+
         form.on('submit(next)', function(data) {
             var formdata = $('form').serialize();
             if (formdata) {
-                $.post('./data/commonData.json',formdata,function(data){
+                $.post('./data/commonData.json', formdata, function(data) {
                     console.log(data);
                 });
             }

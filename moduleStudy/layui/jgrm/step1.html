@@ -65,7 +65,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">原密码</label>
                         <div class="layui-input-block">
-                            <input type="password" name="oldPass" placeholder="请输入原密码" required autocomplete="off" lay-verify="" class="layui-input">
+                            <input type="password" name="oldPass" placeholder="请输入原密码" required autocomplete="off" lay-verify="required" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -100,7 +100,6 @@
             $ = layui.jquery;
 
         form.on('submit(next)', function(data) {
-            console.log(JSON.stringify(data.field));
             $.ajax({
                 method: "POST",
                 url: "./data/firstData.json",
