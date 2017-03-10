@@ -7,12 +7,28 @@
     <title></title>
     <link rel="stylesheet" href="../lib/layui/build/css/layui.css">
     <style>
-        .layout{
-            
-        }
-        .layui-btn-normal{
-                    
-        }
+    .layout {
+        margin: 0 auto;
+        padding-top: 50px;
+    }
+    
+    .layui-btn-normal {
+        background-color: #1AA094;
+    }
+    
+    .layui-textarea {
+        min-height: 360px;
+        width: 600px;
+    }
+    
+    .layui-btn-danger {
+        width: 100px;
+        border-radius: 6px;
+    }
+    
+    .title-type {
+        line-height: 36px;
+    }
     </style>
 </head>
 
@@ -22,26 +38,47 @@
             <form class="layui-form">
                 <div class="layui-form-item">
                     <label class="layui-form-label">业务名称：</label>
-                    <div class="layui-input-block">
+                    <div class="layui-input-block title-type">
                         <span>洗车</span>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">业务协议：</label>
                     <div class="layui-input-block">
-                        
+                        <textarea placeholder="请输入内容" class="layui-textarea" rows="10" cols="5">
+                            统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容
+                        </textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">保证金：</label>
+                    <div class="layui-input-block">
+                        <button class="layui-btn layui-btn-radius layui-btn-danger">1000元</button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">支付方式：</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="paytype" value="wepay" title="微信">
+                        <input type="radio" name="paytype" value="alipay" title="支付宝" checked>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <div class="layui-input-block">
-                        <button class="layui-btn" lay-submit lay-filter="next">保存内容</button>
-                        <button class="layui-btn" lay-submit lay-filter="next">提交审核</button>
+                        <button class="layui-btn" lay-submit lay-filter="next">支付开通</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
     <script src="../lib/layui/build/layui.js"></script>
+    <script>
+    layui.use(['layer', 'form', 'upload'], function() {
+        var layer = layui.layer,
+            form = layui.form();
+
+    })
+    </script>
 </body>
 
 </html>

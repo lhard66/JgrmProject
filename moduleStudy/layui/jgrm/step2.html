@@ -269,9 +269,9 @@
                     return "门店LOGO不能为空！";
                 }
             },
-            shopEmpty:function(){
-                var empty=$('input[name=shopImg]').val();
-                if(!empty){
+            shopEmpty: function() {
+                var empty = $('input[name=shopImg]').val();
+                if (!empty) {
                     return "店招图片不能为空！";
                 }
             }
@@ -280,9 +280,20 @@
         form.on('submit(next)', function(data) {
             var formdata = $('form').serialize();
             if (formdata) {
-                $.post('./data/commonData.json', formdata, function(data) {
-                    console.log(data);
+                $.ajax({
+                    method: "POST",
+                    url: "./data/firstData.json",
+                    data: formdata,
+                    dataType: "text"
+                }).done(function(result) {
+                    if (result == 'success') {
+                        // document.location = './twoCarShopInfo.html';
+                    } else {
+                        layer.alert('修改失败，请刷新网页后重试！');
+                    }
                 });
+            }else{
+                layer.alert('页面载入异常，请刷新网页后重试！');
             }
             return false;
         });
