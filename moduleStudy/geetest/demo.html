@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>极验验证使用测试</title>
+</head>
+
+<body>
+  <div id="check_code"></div>
+  <script src="http://code.jquery.com/jquery-1.12.3.min.js"></script>
+  <script src="http://static.geetest.com/static/tools/gt.js"></script>
+  <script>
+  var handlerEmbed = function(captchaObj) {
+    captchaObj.appendTo("#check_code");
+  };
+  $.ajax({
+    // 获取id，challenge，success（是否启用failback）
+    url: window.location.origin + "/car-business/a/get/captcha?t=" + (new Date()).getTime(),
+    type: "get",
+    dataType: "json",
+    success: function(data) {
+      // 使用initGeetest接口
+      // 参数1：配置参数
+      // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+      initGeetest({
+        gt: data.gt,
+        challenge: data.challenge,
+        product: "float"        
+      }, handlerEmbed);
+    }
+  });
+  </script>
+</body>
+
+</html>
