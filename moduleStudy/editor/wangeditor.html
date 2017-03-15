@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>自适应编辑器高度</title>
+  <link rel="stylesheet" href="/node_modules/wangeditor/dist/css/wangEditor.css">
+  <style type="text/css">
+  body {
+    height: 9999px;
+  }
+  
+  .editor-container {
+    /*width: 800px;
+  	height: 1200px;*/
+  }
+  
+  #div1 {
+    width: 100%;
+    height: 1800px;
+  }
+  
+  .wangEditor-txt {
+    min-height: 200px;
+    height: auto!important;
+  }
+  </style>
+</head>
+
+<body>
+  <!-- <a href="#" id="test">测试按钮</a> -->
+  <div class="editor-container">
+    <div id="editor" style="height:400px;">
+      <p>请输入内容...</p>
+      <p>请输入内容...</p>
+      <p>请输入内容...</p>
+      <p>请输入内容...</p>
+      <p>请输入内容...</p>
+    </div>
+  </div>
+  <script src="/node_modules/wangeditor/dist/js/lib/jquery-2.2.1.js"></script>
+  <script src="/node_modules/wangeditor/dist/js/wangEditor.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    var editor = new wangEditor('editor');
+    console.log(editor);
+    // 取消粘贴过滤
+    editor.config.pasteFilter = false;
+    // 修改菜单栏fixed的上边距（单位 px）
+    // editor.config.menuFixed = 0;
+    // 配置 onchange 事件
+    editor.onchange = function() {
+      // 编辑区域内容变化时，实时打印出当前内容
+      var textObj = this.$txt;
+      console.log(textObj.scrollTop());
+      //如果有滚动条（值为0），则将高度（height）设置为：滚动条的值+获取的编辑区高度
+      if (textObj.scrollTop() > 0) {
+        var height = textObj.height();
+        console.log(height);
+        height += textObj.scrollTop();
+        console.log(height);
+        // $('#editor').height(height);
+        //处理编辑栏固定问题
+        // editor.valueContainerHeight = height;
+      }
+    };
+
+    editor.create();
+
+    var text = editor.$txt;
+    $('#test').on('click', function() {
+      console.log(text.height());
+      console.log(text.scrollTop());
+    });
+  });
+  </script>
+</body>
+
+</html>
