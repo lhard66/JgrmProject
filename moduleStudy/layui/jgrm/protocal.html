@@ -45,8 +45,10 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">业务协议：</label>
                     <div class="layui-input-block">
-                        <textarea placeholder="请输入内容" class="layui-textarea" rows="10" cols="5">
+                        <textarea placeholder="请输入内容" id="txt_protocal" class="layui-textarea" rows="10" cols="5" readonly="readonly">
                             统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容
+                            <p>dksjfkdsjfskdj</p>
+                            <b>dsfsdfewoi</b>
                         </textarea>
                     </div>
                 </div>
@@ -54,13 +56,14 @@
                     <label class="layui-form-label">保证金：</label>
                     <div class="layui-input-block">
                         <button class="layui-btn layui-btn-radius layui-btn-danger">1000元</button>
+                        <p>保证金用于诚信担保，关闭业务时给予退还。</p>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">支付方式：</label>
                     <div class="layui-input-block">
-                        <input type="radio" name="paytype" value="wepay" title="微信">
-                        <input type="radio" name="paytype" value="alipay" title="支付宝" checked>
+                        <input type="radio" name="paytype" value="wepay" title="微信" checked>
+                        <!-- <input type="radio" name="paytype" value="alipay" title="支付宝" checked> -->
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -75,7 +78,11 @@
     <script>
     layui.use(['layer', 'form', 'upload'], function() {
         var layer = layui.layer,
-            form = layui.form();
+            form = layui.form(),
+            $=layui.jquery;
+        $.get('',function(){
+            // $('#txt_protocal').text('');
+        });
 
     })
     </script>
