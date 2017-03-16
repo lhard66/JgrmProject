@@ -8,7 +8,7 @@
 </head>
 
 <body>
-  <div class="editor-container">
+  <div class="editor-container" id="editor_container">
     <div id="editor" style="height:400px;">
       <p>请输入内容...</p>
       <p>请输入内容...</p>
@@ -32,12 +32,13 @@ function printLog(title, info) {
 }
 var token = '';
 
-function uploadImage() {
+//自执行函数，获取token
+(function() {
   $.get('/Radio/resource/cloud/bulk/gettoken', function(data) {
     token = data.token;
   })
-}
-uploadImage();
+})();
+
 // 初始化七牛上传
 function uploadInit() {
   if(token==''){
@@ -47,6 +48,7 @@ function uploadInit() {
   var editor = this;  
   var btnId = editor.customUploadBtnId;
   var containerId = editor.customUploadContainerId;
+  console.log('container:'+containerId);
   // 创建上传对象
   var uploader = Qiniu.uploader({
     runtimes: 'html5,flash,html4', //上传模式,依次退化
@@ -57,7 +59,7 @@ function uploadInit() {
     //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
     // uptoken : '<Your upload token>',
     //若未指定uptoken_url,则必须指定 uptoken ,uptoken由其他程序生成
-    // unique_names: true,
+    unique_names: true,
     // 默认 false，key为文件名。若开启该选项，SDK会为每个文件自动生成key（文件名）
     // save_key: true,
     // 默认 false。若在服务端生成uptoken的上传策略中指定了 `sava_key`，则开启，SDK在前端将不对key进行任何处理
@@ -76,8 +78,9 @@ function uploadInit() {
       ]
     },
     max_retries: 3, //上传失败最大重试次数
-    // dragdrop: true, //开启可拖曳上传
-    // drop_element: 'editor', //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
+    dragdrop: true, //开启可拖曳上传
+    //拖拽上传文件，必须先点击上传图片按钮，等相关的html标签加载后才可以拖拽上传。
+    drop_element: 'editor_container', //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
     chunk_size: '4mb', //分块上传时，每片的体积
     auto_start: true, //选择文件后自动上传，若关闭需要自己绑定事件触发上传
     init: {
@@ -85,6 +88,7 @@ function uploadInit() {
         plupload.each(files, function(file) {
           // 文件添加进队列后,处理相关的事情
           printLog('on FilesAdded');
+          console.log(file);
         });
       },
       'BeforeUpload': function(up, file) {
@@ -103,10 +107,10 @@ function uploadInit() {
         //    "key": "gogopher.jpg"
         //  }
         printLog(info);
-
+        console.log('-----------------------');
         var domain = up.getOption('domain');
         var res = $.parseJSON(info);
-        var sourceLink = domain + res.hash; //获取上传成功后的文件的Url
+        var sourceLink = domain + res.key; //获取上传成功后的文件的Url
         printLog(sourceLink);
         // 插入图片到editor
         editor.command(null, 'insertHtml', '<img src="' + sourceLink + '" style="max-width:100%;"/>')
