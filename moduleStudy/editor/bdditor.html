@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+	<meta charset="utf-8">
+	<title>百度编辑器的基本使用</title>
+	<link rel="stylesheet" href="bdEditor/themes/default/_css/umeditor.css">
+	<script src="bdEditor/third-party/jquery.min.js"></script>
+	<script src="bdEditor/third-party/template.min.js"></script>
+	<script src="bdEditor/umeditor.config.js"></script>
+	<script src="bdEditor/_src/editor.js"></script>
+	<script src="bdEditor/lang/zh-cn/zh-cn.js"></script>
+</head>
+<body>
+	<script type="text/plain" id="bdEditor" style="width: 1000px;height: 240px;">
+		<p>这里可以写一些输入提示</p>
+	</script>
+
+	<script>
+		//实例化编辑器
+		$(function(){
+        window.um = UM.getEditor('bdEditor', {
+            /* 传入配置参数,可配参数列表看umeditor.config.js */
+            toolbar: ['undo redo | bold italic underline']
+        });
+    });
+
+	</script>
+</body>
+</html>
