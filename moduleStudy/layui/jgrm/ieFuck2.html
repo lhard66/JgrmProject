@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>推荐浏览器</title>
+  <style>
+  .ie-warn {
+    text-align: center;
+    padding: 5px;
+    background-color: #F5E176;
+    font-size: 14px;
+    color: #DE1818;
+    position: static;
+    top: 0;
+    left: 50%;
+    z-index: 10;
+    min-width: 200px;
+    line-height: 30px;
+    border: 1px solid;
+    display: none;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="ie-warn" id="ie_warn">
+    您使用的浏览器有些过时，某些功能可能无法正常使用，建议使用现代浏览器！如<a target="_blank" href="http://cn.bing.com/search?q=%E8%B0%B7%E6%AD%8C%E6%B5%8F%E8%A7%88%E5%99%A8">谷歌浏览器</a>或<a target="_blank" href="http://chrome.360.cn/">360极速浏览器</a>
+  </div>
+  <div>
+    <h3>若是ie10以下的浏览器版本，会出现警告提示。</h3>
+  </div>
+</body>
+<script>
+(function() {
+  //取得浏览器的userAgent字符串      
+  var userAgent = navigator.userAgent;
+  // 判断是否IE浏览器  
+  var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
+
+  if (isIE) {
+    var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+    var versionNum = reIE.exec(userAgent);
+    try {
+      var fIEVersion = parseFloat(versionNum[1]);
+      if (fIEVersion < 10) {
+        //此时跳转至下载浏览器页面。
+        document.getElementById('ie_warn').style.display = 'block';
+        console.log('ie is low');
+      }
+    } catch (e) {
+      //输出错误，但留在原地不中转。
+      console.log(e);
+    }
+  }
+})();
+</script>
+
+</html>
