@@ -2,90 +2,122 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title></title>
-    <link rel="stylesheet" href="../lib/layui/build/css/layui.css">
-    <style>
-    .layout {
-        margin: 0 auto;
-        padding-top: 50px;
-    }
-    
-    .layui-btn-normal {
-        background-color: #1AA094;
-    }
-    
-    .layui-textarea {
-        min-height: 360px;
-        width: 600px;
-    }
-    
-    .layui-btn-danger {
-        width: 100px;
-        border-radius: 6px;
-    }
-    
-    .title-type {
-        line-height: 36px;
-    }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title></title>
+  <link rel="stylesheet" href="../lib/layui/build/css/layui.css">
+  <style>
+  .layout {
+    margin: 0 auto;
+    padding-top: 50px;
+  }
+  
+  .layui-btn-normal {
+    background-color: #1AA094;
+  }
+  
+  .layui-textarea {
+    min-height: 360px;
+    width: 600px;
+  }
+  
+  .money-show {
+    display: block;
+    width: 100px;
+    border-radius: 6px;
+    background-color: #FF5722;
+    border-radius: 100px;
+    height: 35px;
+    line-height: 35px;
+    background-color: #FF5722;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+    border: none;
+    border-radius: 2px;
+    opacity: .9;
+    margin-bottom: 4px;
+  }
+  
+  .title-type {
+    line-height: 36px;
+  }
+  
+  .protocal-container {
+    width: 650px;
+    height: 350px;
+    overflow-y: scroll;
+    border: 1px solid #D2D2D2;
+    border-radius: 5px;
+    padding-top: 6px;
+  }
+  </style>
 </head>
 
 <body>
-    <div class="layout">
-        <div class="content" action="#" method="post">
-            <form class="layui-form">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">业务名称：</label>
-                    <div class="layui-input-block title-type">
-                        <span>洗车</span>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">业务协议：</label>
-                    <div class="layui-input-block">
-                        <textarea placeholder="请输入内容" id="txt_protocal" class="layui-textarea" rows="10" cols="5" readonly="readonly">
-                            统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容 统一协议内容
-                            <p>dksjfkdsjfskdj</p>
-                            <b>dsfsdfewoi</b>
-                        </textarea>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">保证金：</label>
-                    <div class="layui-input-block">
-                        <button class="layui-btn layui-btn-radius layui-btn-danger">1000元</button>
-                        <p>保证金用于诚信担保，关闭业务时给予退还。</p>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">支付方式：</label>
-                    <div class="layui-input-block">
-                        <input type="radio" name="paytype" value="wepay" title="微信" checked>
-                        <!-- <input type="radio" name="paytype" value="alipay" title="支付宝" checked> -->
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <div class="layui-input-block">
-                        <button class="layui-btn" lay-submit lay-filter="next">支付开通</button>
-                    </div>
-                </div>
-            </form>
+  <div class="layout">
+    <div class="content" action="#" method="post">
+      <form class="layui-form">
+        <div class="layui-form-item">
+          <label class="layui-form-label">业务名称：</label>
+          <div class="layui-input-block title-type">
+            <span>洗车</span>
+          </div>
         </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">业务协议：</label>
+          <div class="layui-input-block">
+            <div class="protocal-container">
+              <p>　　年轻人的第一部手机、电视、相机、电饭煲....，这是小米很喜欢用的宣传语，所以不少米粉曾调侃，希望雷军带来年轻人的第一套房，因为大家都冲着高性价比来。</p>
+              <p>　　现在经济观察报给出的报道称，小米正在跟万科沟通，双方要合作开发永丰自持地块，目前内部认购已经开始，内部价比市场价低一半，此消息一出引来众多用户的关注。</p>
+              <p>　　报道中提到，小米和万科合作开发的这个住房主要供小米公司高管和员工购买，目前多位小米员工暗示，公司内部已经开始全员自愿认购，“从上个星期就开始登记了”，重要的是，小米全体员工均可认购。</p>
+              <p></p>
+              <p></p>
+              <p>　　据悉，双方合作项目档次和定位甚至会高于万科翡翠系，目前有两种项目类型可供选择，一种为普通住宅，以70- 90 平方米两居为主，均价大约为5. 5 万元/平方米;一种为叠拼，面积为 178 平方米，售价在 950 万- 1000 万元。</p>
+              <p>　　需要注意的是，目前永丰产业基地周边二手房价格普遍超过 8 万元，这意味着合作项目如果做成可销售的商品房，价格很可能会超过 10 万元/平方米，而小米内部员工认购能够以市场价一半的价格购房，但是无法获得产权和房本，也不能在公开市场自由交易，只能在小米公司内部交易，也不能落户北京市户口。</p>
+              <p>　　小米员工透露，目前公布的价格为初期预算价格，最终价格仍未确定，万科方面负责和金融机构协调按揭，目前初步谈下来的首付比例为50%。“我原来想认购一套叠拼，但物业费比较贵，而且没有产权，也不能落户，就放弃了。”</p>
+              <p>　　目前，除了小米有意外，神州数码和华为均有与万科合作建房的意向。北京房地产人士透露，因为担忧房价上涨可能带来的人才和产业流失，未来北京市政府可能将大力支持开发商自持土地建设和经营，并引进优质学校形成学区房。“政府希望这种模式能够占据一定比例，来完善租赁市场。”</p>
+              <p>　　对于房地产市场而言，虽然这一合作方式整体上减少了投放到公开市场的房源数量，但是由于自持租赁项目不能自由流通，投机性资金难以进入，减轻了部分城市建设人才的住房压力，对房价过快上涨形成市场过热局面形成缓冲效果。据说，如果这一模式可行，未来北京市政府或将把更多政策、土地等资源向自持合作建房方面倾斜。</p>
+              <p></p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">保证金：</label>
+          <div class="layui-input-block">
+            <span class="money-show">1000元</span>
+            <p>保证金用于诚信担保，关闭业务时给予退还。</p>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">支付方式：</label>
+          <div class="layui-input-block">
+            <input type="radio" name="paytype" value="wepay" title="微信" checked>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="agree">支付开通</button>
+          </div>
+        </div>
+      </form>
     </div>
-    <script src="../lib/layui/build/layui.js"></script>
-    <script>
-    layui.use(['layer', 'form', 'upload'], function() {
-        var layer = layui.layer,
-            form = layui.form(),
-            $=layui.jquery;
-        $.get('',function(){
-            // $('#txt_protocal').text('');
-        });
+  </div>
+  <script src="../lib/layui/build/layui.js"></script>
+  <script>
+  layui.use(['layer', 'form', 'upload'], function() {
+    var layer = layui.layer,
+      form = layui.form(),
+      $ = layui.jquery;
 
-    })
-    </script>
+    form.on('submit(agree)', function(data) {
+      window.location = '${ctx}/car/order/wash/pay/${bOrderId}';
+      return false;
+    });
+  })
+  </script>
 </body>
 
 </html>
