@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>layer</title>
+  <link rel="stylesheet" href="./lib/layui/build/css/layui.css">
+</head>
+
+<body>
+  <button class="layui-btn" id="bank">银行付款遮罩层</button>
+  <script src="./lib/layui/build/layui.js"></script>
+  <script>
+  layui.use(['layer', 'form'], function() {
+    var layer = layui.layer,
+      form = layui.form(),
+      $ = layui.jquery;
+    $('#bank').on('click', function() {
+      layer.open({
+        type: 2,
+        skin: 'layui-layer-rim', 
+        area: ['420px', '270px'],
+        content: ['http://192.168.3.23:8092/moduleStudy/layui/bankinfo.html', 'no'],
+        cancel: function() {
+        	//这里是点击右上角的错号时中转的地址。
+          document.location = 'http://jgrm.net';
+        }
+      });
+    })
+  });
+  </script>
+</body>
+
+</html>
