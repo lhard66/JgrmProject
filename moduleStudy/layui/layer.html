@@ -17,18 +17,73 @@
       $ = layui.jquery;
     $('#bank').on('click', function() {
       layer.open({
-        type: 2,
-        skin: 'layui-layer-rim', 
-        area: ['420px', '270px'],
-        content: ['http://192.168.3.23:8092/moduleStudy/layui/bankinfo.html', 'no'],
+        type: 1,
+        skin: 'layui-layer-rim',
+        area: ['420px', '270px'],        
+        yes: function(layero, index) {
+          console.log(layero, index);
+        },
+        // 这里是跳转支付后的弹出框页面地址
+        // content: ['http://192.168.3.23:8092/moduleStudy/layui/bankinfo.html', 'no'],
+        content: $('#pay_container'),
         cancel: function() {
-        	//这里是点击右上角的错号时中转的地址。
-          document.location = 'http://jgrm.net';
+          //这里是点击右上角的错号时中转的地址。
+          // document.location = 'http://jgrm.net';
         }
       });
     })
   });
   </script>
+  <style>
+  .layout {
+    width: 290px;
+    height: 140px;
+    margin: 35px auto;
+    display: none;
+  }
+  .layout>.sel>a:first-of-type{
+  	margin-right: 50px;
+  }
+  .layout>.info{
+  	margin-bottom: 10px;
+  }
+  .layout>.info>h3{
+  	font-size: 18px;
+    font-weight: 600;
+    line-height: 40px;  	
+  }
+  .layout>.info>p{
+  	line-height: 20px;
+  }
+  a {
+    display: block;
+    float: left;
+    width: 115px;
+    height: 48px;
+    background-color: #2E6EA5;    
+    line-height: 50px;
+    text-align: center;
+    text-decoration: none;
+    color: #FFF;
+  }
+  
+  a:hover {
+    color: #1AB394;
+  }
+  </style>
+  <div class="layout" id="pay_container">
+    <div class="info">
+      <h3>请您在新打开的页面上完成付款。</h3>
+      <p>付款完成前请不要关闭此窗口。
+        <br> 完成付款后请根据您的情况点击下面的按钮：
+      </p>
+    </div>
+    <div class="sel">
+      <!-- 这里需要添加点击后跳转的链接 -->
+      <a href="http://jgrm.net">已完成付款</a>
+      <a href="http://jgrm.net">付款出现问题</a>
+    </div>
+  </div>
 </body>
 
 </html>
