@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>获得url地址</title>
+  <script>
+  function GetQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return decodeURI(r[2]);
+    return null;
+  }
+  var param = GetQueryString('id');
+  console.log(param);
+  </script>
+</head>
+
+<body>
+  刷新得到url参数,设置断点进行调试。
+</body>
+
+</html>

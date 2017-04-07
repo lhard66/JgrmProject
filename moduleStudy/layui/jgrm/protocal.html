@@ -52,6 +52,10 @@
     border-radius: 5px;
     padding-top: 6px;
   }
+  
+  .layui-table {
+    width: 360px;
+  }
   </style>
 </head>
 
@@ -94,12 +98,35 @@
         <div class="layui-form-item">
           <label class="layui-form-label">支付方式：</label>
           <div class="layui-input-block">
-            <input type="radio" name="paytype" value="wepay" title="微信" checked>
+            <input type="radio" name="paytype" lay-filter="paytype" value="wepay" title="支付宝" checked>
+            <input type="radio" name="paytype" lay-filter="paytype" value="offlinepay" title="对公转帐">
+          </div>
+          <div class="layui-input-block" id="offlineInfo" style="display: none">
+            <table class="layui-table">
+              <tbody>
+                <tr>
+                  <td>公司全名：</td>
+                  <td>XXXXXX</td>
+                </tr>
+                <tr>
+                  <td>公司帐号：</td>
+                  <td>88888888888888888888888</td>
+                </tr>
+                <tr>
+                  <td>开户行：</td>
+                  <td>郑州支行</td>
+                </tr>
+                <tr>
+                  <td colspan="2">注意：如选择对公转账方式，需要您转账成功后 联系您的客户经理，通知他转账成功，运营 人员确认收款后，才可开通此项业务。
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
         <div class="layui-form-item">
           <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="agree">支付开通</button>
+            <button class="layui-btn" lay-submit lay-filter="agree" id="btnConfirm">支付开通</button>
           </div>
         </div>
       </form>
@@ -113,8 +140,33 @@
       $ = layui.jquery;
 
     form.on('submit(agree)', function(data) {
-      window.location = '${ctx}/car/order/wash/pay/${bOrderId}';
+      if (data.field.paytype == 'offlinepay') {
+        //线下支付
+        $.get('car/business/serv/offline/pay/{boid}', function(data) {
+          if (data == 'success') {
+            //成功
+            layer.alert('提交成功，请进行对公转账');
+          } else {
+            layer.alert('提交失败，请刷新页面重试');
+          }
+        }).error(function() {
+          layer.alert('网络错误，请刷新页面重试');
+        });
+      } else {
+        //支付宝
+        window.location = '${ctx}/car/order/wash/pay/${bOrderId}';
+      }
       return false;
+    });
+    //选择支付类型
+    form.on('radio(paytype)', function(data) {
+      if (data.value == 'offlinepay') {
+        $('#offlineInfo').show();
+        $('#btnConfirm').text('确定');
+      } else {
+        $('#offlineInfo').hide();
+        $('#btnConfirm').text('支付开通');
+      }
     });
   })
   </script>
