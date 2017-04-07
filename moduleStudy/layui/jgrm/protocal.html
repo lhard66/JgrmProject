@@ -103,6 +103,11 @@
           </div>
           <div class="layui-input-block" id="offlineInfo">
             <table class="layui-table">
+              <colgroup>
+                <col width="850">
+                <col width="200">
+                <col>
+              </colgroup>
               <tbody>
                 <tr>
                   <td>公司全名：</td>
@@ -145,7 +150,7 @@
       $('input[value="offlinepay"]').attr('checked', 'checked');
       $('#offlineInfo').show();
       $('#btnConfirm').text('确定');
-    } else {      
+    } else {
       $('input[value="wepay"]').attr('checked', 'checked');
       $('#offlineInfo').hide();
       $('#btnConfirm').text('支付开通');
