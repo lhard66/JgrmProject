@@ -98,10 +98,10 @@
         <div class="layui-form-item">
           <label class="layui-form-label">支付方式：</label>
           <div class="layui-input-block">
-            <input type="radio" name="paytype" lay-filter="paytype" value="wepay" title="支付宝" checked>
+            <input type="radio" name="paytype" lay-filter="paytype" value="wepay" title="支付宝">
             <input type="radio" name="paytype" lay-filter="paytype" value="offlinepay" title="对公转帐">
           </div>
-          <div class="layui-input-block" id="offlineInfo" style="display: none">
+          <div class="layui-input-block" id="offlineInfo">
             <table class="layui-table">
               <tbody>
                 <tr>
@@ -139,22 +139,40 @@
       form = layui.form(),
       $ = layui.jquery;
 
+    //页面加载时
+    var initType = 'offline';
+    if (initType == 'offline') {
+      $('input[value="offlinepay"]').attr('checked', 'checked');
+      $('#offlineInfo').show();
+      $('#btnConfirm').text('确定');
+    } else {      
+      $('input[value="wepay"]').attr('checked', 'checked');
+      $('#offlineInfo').hide();
+      $('#btnConfirm').text('支付开通');
+    }
+    form.render('radio');
+    //提交表单
     form.on('submit(agree)', function(data) {
       if (data.field.paytype == 'offlinepay') {
         //线下支付
-        $.get('car/business/serv/offline/pay/{boid}', function(data) {
-          if (data == 'success') {
-            //成功
+        $.ajax({
+          method: "GET",
+          url: "./data/firstDataa.json",
+          dataType: "text"
+        }).done(function(result) {
+          if (result == 'success') {
             layer.alert('提交成功，请进行对公转账');
           } else {
             layer.alert('提交失败，请刷新页面重试');
           }
-        }).error(function() {
-          layer.alert('网络错误，请刷新页面重试');
+        }).fail(function(err, status) {
+          layer.alert(status);
         });
       } else {
         //支付宝
-        window.location = '${ctx}/car/order/wash/pay/${bOrderId}';
+        // window.location = '${ctx}/car/order/wash/pay/${bOrderId}';
+        layer.alert('alipay');
+        window.open("http://www.jb51.net");
       }
       return false;
     });
