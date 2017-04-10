@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>支付成功</title>
+  <style>
+  body {
+    margin: 0;
+  }
+  
+  .content {
+    margin: 80px auto;
+    width: 540px;
+    height: 260px;
+    border: 1px dashed #000;
+  }
+  
+  .logo {
+    float: left;
+    margin: 50px 40px;
+  }
+  
+  .detail {
+    float: right;
+    margin-top: 35px;
+    margin-right: 65px;
+  }
+  #tel{
+    cursor: pointer;
+  }
+  .header {
+    height: 55px;
+    background-color: #263949;
+  }
+  
+  .title {
+    float: left;
+    color: #FFF;
+    font-size: 23px;
+    margin-left: 14px;
+    line-height: 55px;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div class="title">车生活商家管理平台</div>
+  </div>
+  <div class="content">
+    <div class="logo">
+      <img src="./imgs/right.png" alt="支付成功">
+    </div>
+    <div class="detail">
+      <h3>支付成功！</h3>
+      <p>如有疑问请及时与平台管理员系统。</p>
+      <p id="tel">客服电话：185-3716-8763</p>
+      <p><span id="num">6</span>秒后将自动关闭页面或点此[<a href="javascript:void(0);" id="btnClose">直接关闭</a>]</p>
+    </div>
+  </div>
+</body>
+<script>
+(function() {
+  var numObj = document.getElementById('num');
+  var timer = setInterval(function() {
+    var thisNum = numObj.innerHTML - 1;
+    numObj.innerHTML = thisNum;
+    if (thisNum < 1) {
+      closeWindow();
+    }
+  }, 1000);
+
+  var closeWindow = function() {
+    var userAgent = navigator.userAgent;
+    if (userAgent.indexOf("Firefox") != -1 || userAgent.indexOf("Chrome") != -1) {
+      window.location.href = "about:blank";
+    } else {
+      window.opener = null;
+      window.open("", "_self");
+      window.close();
+    }
+  }
+
+  document.getElementById('btnClose').addEventListener('click', function() {
+    closeWindow();
+  }, false);
+  document.getElementById('tel').addEventListener('click', function() {
+    if (timer) {
+      clearInterval(timer);
+    }
+  }, false);
+
+})()
+</script>
+
+</html>
