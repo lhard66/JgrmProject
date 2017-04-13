@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>二维码</title>
+  <script src="/node_modules/jquery/dist/jquery.js"></script>
+  <script src="/node_modules/jquery.qrcode/jquery.qrcode.min.js"></script>
+</head>
+
+<body>
+  <div id="qrcode"></div>
+  <script>
+  $('#qrcode').qrcode({
+    render: 'canvas',
+    text: 'http://www.baidu.com',
+    width: 180,
+    height: 180
+  });
+  </script>
+</body>
+
+</html>
