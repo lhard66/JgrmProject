@@ -74,11 +74,18 @@
             </div>
           </div>
           <div class="layui-form-item">
+            <label class="layui-form-label">下拉选择框</label>
+            <div class="layui-input-block">
+              <select name="interest">
+                <option value="0">写作</option>
+                <option value="1">阅读</option>
+              </select>
+            </div>
+          </div>          
+          <div class="layui-form-item">
             <label class="layui-form-label">门店地址</label>
             <div class="layui-input-block">
               <input type="text" name="address" id="addrName" lay-verify="required" placeholder="请输入门店地址" autocomplete="off" class="layui-input">
-              <button type="button" id="btnMap">Click Me!</button>
-              <button type="button" id="btnMap2">Click Me2!</button>
               <div class="map">
                 <div class="tips">
                   <span>如果您认为定位有误，请单击地图设置详细店铺位置。<i>注意：若定位准确无需设置。</i></span>
@@ -102,13 +109,11 @@
       <span>版权所有 © Copyright © 2014-2017 河南交广融媒文化传播有限公司 All Rights Reserved. 豫ICP备15036742号-1</span>
     </div>
   </div>
-  <!-- <script src="http://code.jquery.com/jquery-latest.js"></script> -->
   <script src="../lib/layui/build/layui.js"></script>
   <script src="./vue-uploader/vue.js"></script>
   <script src="./vue-uploader/vue-uploader2.js"></script>
   <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=cd617da39e3c8bfcf128d433f3afc8d8&plugin=AMap.Autocomplete"></script>
   <script>
-  var test;
   layui.use(['layer', 'form', 'upload'], function() {
     var layer = layui.layer,
       form = layui.form(),
@@ -220,22 +225,13 @@
       icon: "./imgs/mark.png",
       position: [$('#lng').val(), $('#lat').val()]
     });
-
-
-
-
     //搜索服务
     var placeSearch = null;
     AMap.service(["AMap.PlaceSearch"], function() {
       placeSearch = new AMap.PlaceSearch({ //构造地点查询类
         pageSize: 1,
         city: "郑州", //城市
-        // map: map,
-
       });
-      // placeSearch.markerClick(function(){
-      //   alert(111);
-      // })
     });
 
     //为地图注册click事件获取鼠标点击出的经纬度坐标
@@ -251,31 +247,41 @@
         position: [e.lnglat.getLng(), e.lnglat.getLat()]
       });
       marker.setMap(map);
-    }   
-    map.on('click', clickMark);//注册事件。 
+    }
+    map.on('click', clickMark); //注册事件 
     //测试按钮
-    //将此插件注册放出，避免每次点击都加载。
-    $('#btnMap').on('click', function() {
-      //载入插件
-      //关键字查询
-      var addrName = $('#addrName').val()
-
-      placeSearch.search(addrName, function(status, result) {
-        var locationPoint = result.poiList.pois[0].location;
-        if (!locationPoint) {
-          //搜索出错，或为空
+    //将此插件注册放出，避免每次点击都加载。    
+    var flag = false; //表示未执行
+    $('#addrName').on('keyup', function() {
+        //防抖动
+        if (flag) {
+          console.log(2222);
           return;
         }
-        map = new AMap.Map("map_container", {
-          resizeEnable: true,
-          zoom: 16,
-          center: [locationPoint.lng, locationPoint.lat],
+        flag = true;
+        setTimeout(function() {
+          flag = false;
+          console.log(000)
+        }, 200);
+        //关键字查询
+        var addrName = $('#addrName').val()
+
+        placeSearch.search(addrName, function(status, result) {
+          if (!result || !result.poiList || result.poiList.pois.length < 1) {
+            console.log("aaaa");
+            return;
+          }
+          var locationPoint = result.poiList.pois[0].location;
+          map = new AMap.Map("map_container", {
+            resizeEnable: true,
+            zoom: 16,
+            center: [locationPoint.lng, locationPoint.lat],
+          });
+          map.on('click', clickMark);
         });
-        map.on('click', clickMark);
-      });
-    });
-    //地图部分结束
-    //表单 
+      })
+      //地图部分结束
+      //表单 
     form.verify({
       logoEmpty: function() {
         var empty = $('input[name=logoImg]').val();

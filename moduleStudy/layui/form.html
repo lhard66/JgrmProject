@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>layui form</title>
+  <link rel="stylesheet" href="./lib/layui/build/css/layui.css">
+</head>
+
+<body>
+  <form class="layui-form" action="">
+    <div class="layui-form-item">
+      <label class="layui-form-label">选择框</label>
+      <div class="layui-input-block">
+        <select name="city" lay-verify="required">
+          <option value=""></option>
+          <option value="0">北京</option>
+          <option value="1">上海</option>
+          <option value="2">广州</option>
+          <option value="3">深圳</option>
+          <option value="4">杭州</option>
+        </select>
+      </div>
+      <div class="layui-input-block">
+        <select name="city" lay-verify="required">
+          <option value=""></option>
+          <option value="0">北京</option>
+          <option value="1">上海</option>
+          <option value="2">广州</option>
+          <option value="3">深圳</option>
+          <option value="4">杭州</option>
+        </select>
+      </div>
+    </div>
+  </form>
+  <script src="./lib/layui/build/layui.js"></script>
+  <script>
+  layui.use('form', function() {
+    var form = layui.form();
+
+    //监听提交
+    form.on('submit(formDemo)', function(data) {
+      layer.msg(JSON.stringify(data.field));
+      return false;
+    });
+  });
+  </script>
+</body>
+
+</html>
