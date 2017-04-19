@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>忘记操作密码</title>
+  <link rel="stylesheet" href="../lib/layui/build/css/layui.css">
+</head>
+<style>
+#sendCode {
+  width: 110px;
+}
+</style>
+
+<body>
+  <div class="layout">
+    <div class="main">
+      <div class="content" action="#" method="post">
+        <form class="layui-form">
+          <div class="layui-form-item">
+            <label class="layui-form-label">新密码</label>
+            <div class="layui-input-block">
+              <input type="password" id="new_pass" name="newPass" placeholder="请输入新密码" required autocomplete="off" lay-verify="required|consistent|lenpwd" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">确认密码</label>
+            <div class="layui-input-block">
+              <input type="password" id="again_pass" placeholder="请再次输入新密码" required autocomplete="off" lay-verify="required|consistent|lenpwd" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">手机验证</label>
+            <div class="layui-input-block">
+              <p>注意：</p>
+              <p>1、为保证您的信息安全，输入正确的验证码才能进行相关操作</p>
+              <p>2、验证码接收手机号为合同中的商家乙方的联系人手机号</p>
+              <p>3、发送验证码后，请在120秒内输入正确的验证码并点击确定</p>
+              <p>4、如果下方显示的姓名不是贵方合同签署人或电话号码有误，请联系您的车生活业务经理</p>
+              <p>
+                <span>将手机验证码发送到：张三（138****5678）</span>
+                <button class="layui-btn layui-btn-primary" id="sendCode" type="button">发送验证码</button>
+              </p>
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">验证码</label>
+            <div class="layui-input-block">
+              <input type="text" lay-verify="required|number|lencode" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <div class="layui-input-block">
+              <button class="layui-btn" lay-submit lay-filter="next">确定</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="footer">
+      <span>版权所有 © Copyright © 2014-2017 河南交广融媒文化传播有限公司 All Rights Reserved. 豫ICP备15036742号-1</span>
+    </div>
+  </div>
+  <script src="../lib/layui/build/layui.js"></script>
+  <script>
+  layui.use(['layer', 'form'], function() {
+    var layer = layui.layer,
+      form = layui.form(),
+      $ = layui.jquery;
+
+    //发送验证码
+    $('#sendCode').on('click', function() {
+      //请求后台，查询是否已发验证码
+      var $this = $(this);
+      if ($this.data('iscode')) {
+        return;
+      }
+      var waitTime = 59;
+      $this.data('iscode', true).addClass('layui-btn-disabled').text(waitTime + '秒后重发');
+
+      var timer = setInterval(function() {
+        if (waitTime > 1) {
+          waitTime--;
+          $this.text(waitTime + '秒后重发');
+        } else {
+          clearInterval(timer);
+          $this.data('iscode', false).removeClass('layui-btn-disabled').text('发送验证码');
+        }
+      }, 1000);
+      //调用接口发送手机短信
+      $.ajax({
+        method: "GET",
+        url: "./data/firstData.json",
+        dataType: "text"
+      }).done(function(result) {
+        if (result == 'success') {
+          console.log(result);
+          layer.msg('验证码发送成功!');
+        } else {
+          console.log(result);
+          layer.msg('发送失败，请重试！');
+        }
+      }).fail(function() {
+        layer.msg('网络错误！');
+      })
+    });
+
+    form.on('submit(next)', function(data) {
+      $.ajax({
+        method: "POST",
+        url: "/car-business/car/personal/password",
+        data: JSON.stringify(data.field),
+        dataType: "text"
+      }).done(function(result) {
+        if (result == 'success') {
+          document.location = '/car-buisxxx/a/guide?from=step2';
+        } else {
+          layer.alert('修改失败，请刷新网页后重试！');
+        }
+      }).fail(function(err){
+      	layer.alert('网络错误');
+      })
+      return false;
+    });
+    form.verify({
+      consistent: function() {
+        if ($('#new_pass').val() != $('#again_pass').val()) {
+          return '两次密码输入不一致';
+        }
+      },
+      lenpwd: function(value) {
+        if (value.length < 6) {
+          return '密码至少为6位';
+        }
+      },
+      lencode: function(value) {
+        if (value.length != 6) {
+        	console.log(value.length);
+          return '验证码必须为6位';
+        }
+      }
+    });
+
+  });
+  </script>
+</body>
+
+</html>

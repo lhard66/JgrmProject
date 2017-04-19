@@ -67,3 +67,12 @@ img {
     text-decoration: none;
     color: red;
 }
+.province,.city,.area{
+    width: 163px;
+    float: left;
+    margin-left: 0px;
+    margin-right: 10px;
+}
+.area{
+    margin-right: 0;
+}
