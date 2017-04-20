@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>jquery时间选择器</title>
+  <link rel="stylesheet" href="./jquery-timepicker/DateTimePicker.css">
+  <script src="/node_modules/jquery/dist/jquery.js"></script>
+  <script src="jquery-timepicker/DateTimePicker.js"></script>
+  <script src="jquery-timepicker/i18n/DatetimePicker-i18n-zh-CN.js"></script>
+  <style type="text/css">
+  p {
+    margin-left: 20px;
+  }
+  
+  input {
+    width: 200px;
+    padding: 10px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+  }
+  </style>
+</head>
+
+<body>
+	<h3><a href="https://github.com/nehakadam/DateTimePicker">GitHub地址	[nehakadam/DateTimePicker]</a></h3>
+  <!-- Date Picker -->
+  <p>Date : </p>
+  <input type="text" data-field="date" readonly>
+  <hr>
+  <!-- Time Picker -->
+  <p>Start Time : </p>
+  <input type="text" id="openTime" class="startTime1" data-field="time" data-startend="start" data-startendelem=".endTime1" readonly>
+  <p>End Time : </p>
+  <input type="text" id="closeTime" class="endTime1" data-field="time" data-startend="end" data-startendelem=".startTime1" readonly>
+  <hr>
+  <!-- DateTime Picker -->
+  <p>DateTime : </p>
+  <input type="text" data-field="datetime" readonly>
+  <p>例子：</p>
+  <p>Start Time : </p>
+  <input class="startTime2" type="text" data-field="time" data-startend="start" data-format="hh:mm AA" data-startendelem=".endTime2" readonly>
+  <p>End Time : </p>
+  <input class="endTime2" type="text" data-field="time" data-format="hh:mm AA" data-startend="end" data-startendelem=".startTime2" readonly>
+  <div id="dtBox"></div>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $("#dtBox").DateTimePicker({
+      isPopup: false,
+      minuteInterval: 10,
+      setButtonContent: "设置",
+      clearButtonContent: "清除",
+      titleContentTime: "营业时间",
+
+    });
+  });
+  </script>
+</body>
+
+</html>
