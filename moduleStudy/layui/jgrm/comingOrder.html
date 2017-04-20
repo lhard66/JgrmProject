@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>订单消息</title>
+</head>
+
+<body>
+  <div>订单消息监视开启...</div>
+  <script src="/node_modules/jquery/dist/jquery.js"></script>
+  <audio id="audio" src="./data/horse.ogg">跟你说了多少次,你就是不听,那么低版本的浏览器还不换掉,你是想搞啥子?</audio>
+  <button type="button" id="play">Click Me!</button>
+  <script>
+  (function($) {
+    var showNotification = function() {
+        // 播放订单声音
+        $('#audio')[0].play();
+        
+        if (window.Notification && Notification.permission !== "denied") {
+          Notification.requestPermission(function(status) {
+            var n = new Notification('通知', {
+              body: '您有新的订单啦！',
+              icon: './imgs/guitar.png'
+            });
+          });
+        } else {
+          alert('您有新的订单啦！');
+        }
+      }
+      
+    //轮循检查是否有新的订单
+    var newOrderTimer = setInterval(function() {
+      $.ajax({
+        method: 'GET',
+        url: './data/firstData.json',
+        dataType: 'text'
+      }).done(function(result) {
+        if (result == 'success') {
+          showNotification();
+        } else {
+          //没有新的订单，不做什么。
+        }
+      }).fail(function() {
+        console.log('网络错误！');
+      })
+    }, 8000);
+  })($);
+  //测试按钮
+  (function($) {
+    $("#play").on('click', function() {
+      $('#audio')[0].play();
+    });
+  })($);
+  </script>
+</body>
+
+</html>
