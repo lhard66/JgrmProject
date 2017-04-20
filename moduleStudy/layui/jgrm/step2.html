@@ -9,6 +9,14 @@
   <link rel="stylesheet" href="./css/guide.css">
   <link rel="stylesheet" href="css/twoCarShop.css">
   <link rel="stylesheet" href="./vue-uploader/vue-uploader2.css">
+  <style>
+  #dtBox .dtpicker-buttonCont .dtpicker-button {    
+    background: #3175B0;    
+  }
+  .timeSelector{
+    cursor: pointer;
+  }
+  </style>
 </head>
 
 <body>
@@ -71,10 +79,10 @@
             <label class="layui-form-label">营业时间</label>
             <div class="layui-input-block">
               <div class="layui-input-inline">
-                <input class="layui-input" placeholder="开始日" id="LAY_demorange_s">
+                <input type="text" id="openTime" class="layui-input timeSelector" data-field="time" data-startend="start" data-startendelem="#closeTime" readonly>
               </div>
               <div class="layui-input-inline">
-                <input class="layui-input" placeholder="截止日" id="LAY_demorange_e">
+                <input type="text" id="closeTime" class="layui-input timeSelector" data-field="time" data-startend="end" data-startendelem="#openTime" readonly>
               </div>
             </div>
           </div>
@@ -112,7 +120,7 @@
               <input type="text" name="address" id="addrName" lay-verify="required" placeholder="请输入门店地址" autocomplete="off" class="layui-input">
               <div class="map">
                 <div class="tips">
-                  <span>如果您认为定位有误，请单击地图设置详细店铺位置。<i>注意：若定位准确无需设置。</i></span>
+                  <span>如果您认为定位有误，请放大或缩小地图，找到准确位置，单击鼠标左键定位。</span>
                 </div>
                 <input type="hidden" id="lng" name="lng" value="113.677942">
                 <input type="hidden" id="lat" name="lat" value="34.767232">
@@ -133,47 +141,18 @@
       <span>版权所有 © Copyright © 2014-2017 河南交广融媒文化传播有限公司 All Rights Reserved. 豫ICP备15036742号-1</span>
     </div>
   </div>
+  <div id="dtBox"></div>
   <script src="http://code.jquery.com/jquery-latest.js"></script>
   <script src="../lib/layui/build/layui.js"></script>
   <script src="./vue-uploader/vue.js"></script>
   <script src="./vue-uploader/vue-uploader2.js"></script>
+  <link rel="stylesheet" href="./jquery-timepicker/DateTimePicker.css">
+  <script src="./jquery-timepicker/DateTimePicker.js"></script>
   <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=cd617da39e3c8bfcf128d433f3afc8d8&plugin=AMap.Autocomplete"></script>
   <script>
   layui.use(['layer', 'form', 'laydate'], function() {
     var layer = layui.layer,
-      form = layui.form(),
-      laydate = layui.laydate;
-
-    var start = {
-      min: laydate.now(),
-      max: '2099-06-16 23:59:59',
-      istoday: false,
-      choose: function(datas) {
-        end.min = datas; //开始日选好后，重置结束日的最小日期
-        end.start = datas //将结束日的初始值设定为开始日
-      }
-    };
-
-    var end = {
-      min: laydate.now(),
-      max: '2099-06-16 23:59:59',
-      istoday: false,
-      choose: function(datas) {
-        start.max = datas; //结束日选好后，重置开始日的最大日期
-      }
-    };
-
-    document.getElementById('LAY_demorange_s').onclick = function() {      
-      laydate({
-        elem:this,
-        format: 'hh:mm:ss', 
-        istime: true,
-      });
-    }
-    document.getElementById('LAY_demorange_e').onclick = function() {
-      end.elem = this
-      laydate(end);
-    }
+      form = layui.form()
 
     form.on('select(location)', function(data) {
       console.log(data.value); //得到被选中的值
@@ -315,6 +294,16 @@
       }
     });
   })(Vue);
+  //时间选择器
+  (function($) {
+    $("#dtBox").DateTimePicker({
+      isPopup: false,
+      minuteInterval: 10,
+      setButtonContent: "设置",
+      clearButtonContent: "清除",
+      titleContentTime: "营业时间",
+    });
+  })($);
   //地图部分
   (function($) {
     var map = new AMap.Map("map_container", {
