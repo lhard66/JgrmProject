@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>时间选择器</title>
+  <link rel="stylesheet" href="/node_modules/vue2-timepicker/dist/vue2-timepicker.css">
+</head>
+
+<body>
+  <div id="app">
+    <span>{{name}}</span>
+    <timepicker></timepicker>
+  </div>
+  <script src="/node_modules/vue/dist/vue.js"></script>
+  <script src="/node_modules/vue2-timepicker/dist/vue2-timepicker.js"></script>
+  <script>
+ 
+  var yourComponent = new Vue({
+    components: {
+      timepicker: VueTimepicker
+    },
+    el: '#app',
+    data: {
+      name: 'jim',
+    }
+  })
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>时间选择插件</title>
+  <style>
+  body {
+    background: #EFEFEF;
+    padding: 20px;
+  }
+  
+  h1 {
+    font-weight: bold;
+  }
+  
+  p {
+    margin: 10px 0;
+  }
+  </style>
+</head>
+
+<body>
+  <h1>jQuery TimePicker Demo</h1>
+  <br/>
+  <form>
+    <input type="text" class="timepicker" name="time" />
+  </form>
+  <a href="http://github.com/wvega/timepicker" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+  <script src="/node_modules/jquery/dist/jquery.js"></script>
+  <script src="js/jquery.timepicker.min.css"></script>
+  <script src="js/jquery.timepicker.min.js"></script>
+  <script>
+  (function($) {
+    $(function() {
+      $('input.timepicker').timepicker();
+    });
+  })(jQuery);
+  </script>
+</body>
+
+</html>
