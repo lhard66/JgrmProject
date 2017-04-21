@@ -79,10 +79,13 @@
             <label class="layui-form-label">营业时间</label>
             <div class="layui-input-block">
               <div class="layui-input-inline">
-                <input type="text" id="openTime" class="layui-input timeSelector" data-field="time" data-startend="start" data-startendelem="#closeTime" readonly>
+                <input type="text" id="openTime" name="opentime" lay-verify="required" class="layui-input timeSelector" data-field="time" data-startend="start" data-startendelem="#closeTime" placeholder="点击设置开始时间" readonly>
+              </div>
+              <div style="width:30px;float: left;line-height: 38px;">
+                <span>至</span>
               </div>
               <div class="layui-input-inline">
-                <input type="text" id="closeTime" class="layui-input timeSelector" data-field="time" data-startend="end" data-startendelem="#openTime" readonly>
+                <input type="text" id="closeTime" name="closetime" lay-verify="required" class="layui-input timeSelector" data-field="time" data-startend="end" data-startendelem="#openTime" placeholder="点击设置结束时间" readonly>
               </div>
             </div>
           </div>
@@ -177,6 +180,7 @@
 
     form.on('submit(next)', function(data) {
       var formdata = $('form').serialize();
+      console.log(formdata);
       if (formdata) {
         $.ajax({
           method: "POST",
@@ -301,7 +305,13 @@
       minuteInterval: 10,
       setButtonContent: "设置",
       clearButtonContent: "清除",
-      titleContentTime: "营业时间",
+      titleContentTime: "营业时间",      
+      afterHide:function(InputElement){
+        var $this=$(InputElement);
+        if($this.data('startend')=='start'&&$this.val()!=''){
+          $('#closeTime').focus();
+        }
+      }
     });
   })($);
   //地图部分
