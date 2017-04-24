@@ -11,7 +11,8 @@
 <body>
   <div class="container">
   	<h3><a href="https://github.com/ciaoca/cxSelect">GitHub地址</a></h3>
-    <div id="element_id">      
+    <div id="element_id">      	    
+      <select class="province" data-value="河南省"></select>
       <select class="city"></select>
       <select class="area"></select>
     </div>
@@ -19,7 +20,7 @@
   <script>
   $('#element_id').cxSelect({
     url: 'cityData.json', // 如果服务器不支持 .json 类型文件，请将文件改为 .js 文件
-    selects: [ 'city', 'area'], // 数组，请注意顺序
+    selects: [ 'province','city', 'area'], // 数组，请注意顺序
     emptyStyle: 'none'
   });
   </script>
