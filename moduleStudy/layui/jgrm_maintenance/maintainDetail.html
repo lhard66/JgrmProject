@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+	<meta charset="utf-8">
+	<title>保养详情</title>
+	<style>
+		p{
+			margin: 0;
+		}
+		.detail{
+			border-collapse: collapse;    
+		}
+		.detail tr>td:nth-child(odd){
+			font-weight: 600;			
+		}
+		.total tr>td:nth-child(odd){
+			font-weight: normal;
+		}
+		.detail td{
+			border: 1px solid #DDD;
+		}		
+		.total td{
+			border: 0;
+		}
+	</style>
+</head>
+<body>
+	<table class="detail">
+		<tr>
+			<td>订单号码：</td>
+			<td>XXXXXX</td>
+			<td>订单状态：</td>
+			<td>已评价</td>
+		</tr>
+		<tr>
+			<td>下单时间：</td>
+			<td>2016-06-17 16:30</td>
+			<td>预约时间：</td>
+			<td>2017-04-01 18:40</td>
+		</tr>
+		<tr>
+			<td>保养方案：</td>
+			<td>小保养</td>
+			<td>用户评价：</td>
+			<td>3分  <a href="#">查看详情</a></td>
+		</tr>
+		<tr>
+			<td>保养进度：</td>
+			<td>
+				<p>保养已完成，请联系服务顾问XXX提车</p>
+				<p>2016-06-01 16:50</p>
+			</td>
+		</tr>
+		<tr>
+			<td>保养车辆：</td>
+			<td>
+				<p>豫A12345</p>
+				<p>奥迪A4L 2016款自动标准型</p>
+			</td>
+		</tr>
+		<tr>
+			<td>订单项目：</td>
+			<td>
+				<table class="total">
+					<tr>
+						<th>名称</th>
+						<th>价格(￥)</th>
+					</tr>
+					<tr>
+						<td>小保养12项基础服务标准工时</td>
+						<td>100</td>
+					</tr>
+					<tr>
+						<td>嘉实多极护0w-40</td>
+						<td>320</td>
+					</tr>
+					<tr>
+						<td>工时优惠</td>
+						<td>-50</td>
+					</tr>
+					<tr>
+						<td>费用合计</td>
+						<td>370</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

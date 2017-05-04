@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link href="/car-business/static/plugins/hp/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+  <link href="/car-business/static/plugins/hp/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+  <link href="/car-business/static/plugins/hp/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+  <script src="/car-business/static/plugins/hp/js/jquery.min.js?v=2.1.4"></script>
+  <script src="/car-business/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/car-business/static/plugins/hp/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+  <script type="text/javascript" src="/car-business/static/plugins/hp/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+  <link href="/car-business/static/plugins/hp/css/style.min.css?v=4.0.0" rel="stylesheet">
+  <script src="./layer/layer.js"></script>
+  <script type="text/javascript" src="/car-business/static/plugins/hp/js/plugins/layer/laydate/laydate.js"></script>
+</head>
+
+<body class="gray-bg">
+  <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox-content">
+      <div id="tb" class="row row-lg">
+        <form id="searchForm">
+          <div class="form-group">
+            <div class="col-xs-10">
+              <div class="row">
+                <div class="col-xs-2">
+                  <input type="text" name="filter_LIKES_id" placeholder="订单号" class="form-control input-sm" />
+                </div>
+                <div class="col-xs-2">
+                  <input type="text" name="filter_LIKES_name" placeholder="昵称" class="form-control input-sm" />
+                </div>
+                <div class="col-xs-2">
+                  <input type="text" name="filter_LIKES_phone" placeholder="电话" class="form-control input-sm" />
+                </div>
+                <div class="col-xs-2">
+                  <input type="text" name="filter_GTL_createTime" placeholder="开始日期" class="form-control input-sm" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" />
+                </div>
+                <div class="col-xs-2">
+                  <input type="text" name="filter_LTL_createTime" placeholder="结束日期" class="form-control input-sm" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">
+                  <i class="fa fa-search"></i>查询
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="exportdata()">导出数据</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="row row-lg m-t-md">
+        <table id="dg"></table>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+  var OrderStatus = {
+    unpay: 0,
+    payed: 1,
+    served: 2,
+    commented: 3,
+    refunding: 4,
+    refunded: 5,
+    expired: 6,
+    unpay_expired: 7,
+    applyrefund: 8
+  };
+  Date.prototype.Format = function(fmt) {
+    var o = {
+      "M+": this.getMonth() + 1, //月份 
+      "d+": this.getDate(), //日 
+      "h+": this.getHours(), //小时 
+      "m+": this.getMinutes(), //分 
+      "s+": this.getSeconds(), //秒 
+      "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+      "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+      if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+  }
+
+  $(function() {
+    $('#dg').bootstrapTable({
+      url: "./data/maintainData.json",
+      dataType: "json",
+      responseHandler: function(res) {
+        return {
+          "total": res.data.total, //总页数
+          "rows": res.data.rows //数据
+        };
+      },
+      pagination: true, //分页
+      singleSelect: false,
+      //      data-locale:"zh-CN",
+      search: false, //显示搜索框
+      queryParamsType: "other",
+      sidePagination: "server", //服务端处理分页
+      columns: [{
+        title: '订单号码',
+        field: 'id',
+        align: 'center',
+        valign: 'middle'
+      }, {
+        title: '下单时间',
+        field: 'createTime',
+        align: 'center',
+        valign: 'middle',
+        formatter: function(value, row,
+          index) {
+          return new Date(row.createTime).Format("yyyy-MM-dd hh:mm:ss");
+        }
+      }, {
+        title: '用户昵称',
+        field: 'name',
+        align: 'center'
+      }, {
+        title: '电话',
+        field: 'phone',
+        align: 'center'
+      }, {
+        title: '服务项目',
+        field: 'orderTitle',
+        align: 'center'
+      }, {
+        title: '金额',
+        field: 'price',
+        align: 'center'
+      }, {
+        title: '状态',
+        field: 'orderStatus',
+        align: 'center',
+        formatter: function(value, row,
+          index) {
+          var label = '';
+          //unpay:0,payed:1,served:2,commented:3,refunding:4,refunded:5,expired:6,unpay_expired:7,applyrefund:8
+          if (row.orderStatus == OrderStatus.unpay) {
+            label = '未付款';
+          } else if (row.orderStatus == OrderStatus.payed) {
+            label = '未消费';
+          } else if (row.orderStatus == OrderStatus.served) {
+            label = '未评价';
+          } else if (row.orderStatus == OrderStatus.commented) {
+            label = '已评价';
+          } else if (row.orderStatus == OrderStatus.refunding) {
+            label = '退款中';
+          } else if (row.orderStatus == OrderStatus.refunded) {
+            label = '已退款';
+          } else if (row.orderStatus == OrderStatus.expired) {
+            label = '已过期';
+          } else if (row.orderStatus == OrderStatus.unpay_expired) {
+            label = '已失效';
+          } else if (row.orderStatus == OrderStatus.applyrefund) {
+            label = '待退款';
+          } else {
+            label = '订单异常（' + row.orderStatus + '）';
+          }
+          return label;
+        }
+      }, {
+        title: '操作',
+        field: 'id',
+        align: 'center',
+        formatter: function(value, row,
+          index) {
+          if (row.orderStatus == OrderStatus.applyrefund) {
+            return '<a href="javascript:void(0)" mce_href="#" onclick="detail(\'' + row.id + '\')">详情</a> | <a href="javascript:void(0)" mce_href="#" onclick="refund(\'' + row.id + '\')">退款</a>';
+          }
+          return '<a href="javascript:void(0)" mce_href="#" onclick="detail(\'' + row.id + '\')">详情</a> ';
+        }
+      }]
+    });
+
+    $("#searchForm").on('submit', function() {
+      $('#dg').bootstrapTable('refresh', {
+        url: "./data/maintainSearchData.json",        
+      });      
+      return false;
+    });
+  });
+
+  function detail(id) {
+    layer.open({
+      type: 2,
+      area: ['550px', '250px'],
+      title: "订单详情",
+      fixed: false, //不固定
+      maxmin: true,
+      content: ['./maintainDetail.html', 'no']
+    });
+  }
+
+  function exportdata() {
+    //<a href="${ctx}/car/order/wash/export" target="_blank" >导出数据</a>
+    parent.window.open(window.location.origin + "${ctx}/car/order/wash/export", "_blank");
+  }
+  </script>
+</body>
+
+</html>
