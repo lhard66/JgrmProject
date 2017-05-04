@@ -55,7 +55,7 @@
 </head>
 
 <body>
-  <table class="detail">
+  <table class="detail" id="page">
     <tr>
       <td>订单号码：</td>
       <td>XXXXXX</td>
@@ -116,6 +116,22 @@
       </td>
     </tr>
   </table>
+  <script src="/car-business/static/plugins/vue/vue.js"></script>
+  <script>
+  var vm = new Vue({
+    el: '#page',
+    data: {
+      msg: '123',
+    },
+    mounted: function() {
+      fetch('./data/maintainDetail.json').then(function(res){      	
+      	return res.json();
+      }).then(function(data){
+      	console.log(data);
+      });
+    }
+  })
+  </script>
 </body>
 
 </html>
