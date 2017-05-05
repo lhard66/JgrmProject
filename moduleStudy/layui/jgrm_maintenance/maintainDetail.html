@@ -52,82 +52,95 @@
     font-weight: 600;
   }
   </style>
+  <link rel="stylesheet" href="loading.css">
 </head>
 
 <body>
-  <table class="detail" id="page">
-    <tr>
-      <td>订单号码：</td>
-      <td>XXXXXX</td>
-      <td>订单状态：</td>
-      <td>已评价</td>
-    </tr>
-    <tr>
-      <td>下单时间：</td>
-      <td>2016-06-17 16:30</td>
-      <td>预约时间：</td>
-      <td>2017-04-01 18:40</td>
-    </tr>
-    <tr>
-      <td>保养方案：</td>
-      <td>小保养</td>
-      <td>用户评价：</td>
-      <td>3分 <a href="#">查看详情</a></td>
-    </tr>
-    <tr>
-      <td>保养进度：</td>
-      <td colspan="3">
-        <p>保养已完成，请联系服务顾问XXX提车</p>
-        <p>2016-06-01 16:50</p>
-      </td>
-    </tr>
-    <tr>
-      <td>保养车辆：</td>
-      <td colspan="3">
-        <p>豫A12345</p>
-        <p>奥迪A4L 2016款自动标准型</p>
-      </td>
-    </tr>
-    <tr>
-      <td>订单项目：</td>
-      <td colspan="3">
-        <table class="total">
-          <tr class="total-title">
-            <td>名称</td>
-            <td>价格(￥)</td>
-          </tr>
-          <tr>
-            <td>小保养12项基础服务标准工时</td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>嘉实多极护0w-40</td>
-            <td>320</td>
-          </tr>
-          <tr>
-            <td>工时优惠</td>
-            <td>-50</td>
-          </tr>
-          <tr>
-            <td>费用合计</td>
-            <td>370</td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+  <div id="page">
+    <table class="detail" v-if="loading">
+      <tr>
+        <td>订单号码：</td>
+        <td>{{orderData.orderId}}</td>
+        <td>订单状态：</td>
+        <td>{{orderData.orderStatus}}</td>
+      </tr>
+      <tr>
+        <td>下单时间：</td>
+        <td>{{orderData.buyTime}}</td>
+        <td>预约时间：</td>
+        <td>{{orderData.orderTime}}</td>
+      </tr>
+      <tr>
+        <td>保养方案：</td>
+        <td>{{orderData.type}}</td>
+        <td>用户评价：</td>
+        <td>{{orderData.comment}}<a href="#">查看详情</a></td>
+      </tr>
+      <tr>
+        <td>保养进度：</td>
+        <td colspan="3">
+          <p>{{orderData.stage.content}}</p>
+          <p>{{orderData.stage.time}}</p>
+        </td>
+      </tr>
+      <tr>
+        <td>保养车辆：</td>
+        <td colspan="3">
+          <p>{{orderData.car.num}}</p>
+          <p>{{orderData.car.content}}</p>
+        </td>
+      </tr>
+      <tr>
+        <td>订单项目：</td>
+        <td colspan="3">
+          <table class="total">
+            <tr class="total-title">
+              <td>名称</td>
+              <td>价格(￥)</td>
+            </tr>
+            <template v-for="item in orderData.orderDetail">
+              <tr>
+                <td>{{item.name}}</td>
+                <td>{{item.money}}</td>
+              </tr>
+            </template>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <div class="spinner" v-show="false">
+      <div class="rect1"></div>
+      <div class="rect2"></div>
+      <div class="rect3"></div>
+      <div class="rect4"></div>
+      <div class="rect5"></div>
+    </div>
+  </div>
   <script src="/car-business/static/plugins/vue/vue.js"></script>
-  <script>
+  <script>  
   var vm = new Vue({
     el: '#page',
     data: {
-      msg: '123',
+      msg: '',
+      code: -1,
+      orderData: null,
+      loading: false,
     },
     mounted: function() {
-      fetch('./data/maintainDetail.json').then(function(res){      	
-      	return res.json();
-      }).then(function(data){
-      	console.log(data);
+      var _this = this;      
+      fetch('./data/maintainDetail.json').then(function(res) {
+        return res.json();
+      }).then(function(jsonData) {
+        if (jsonData.code == 200) {
+          _this.msg = jsonData.msg;
+          _this.orderData = jsonData.data;
+        } else {
+          alert('请求数据有误');
+        }        
+        _this.loading = true;
+      }).catch(function(err) {
+        alert(err);
+        _this.loading = true;
       });
     }
   })
