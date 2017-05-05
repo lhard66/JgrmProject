@@ -2,33 +2,16 @@
   "code": 200,
   "msg": "成功",
   "data": {
-    "total": 77,
-    "rows": [
-      {
-        "id": "U101093",
-        "bid": 62,
-        "buid": null,
-        "name": "lby@test",
-        "phone": "18203679025",
-        "createTime": 1493373758129,
-        "price": 0.01,
-        "lhuid": "02244543",
-        "orderStatus": 1,
-        "checkTime": null,
-        "count": 1,
-        "serviceLabel": "PX_5",
-        "orderTitle": "5座普洗",
-        "payChannel": "jglh_account",
-        "unpayExpireTime": 1493375558129,
-        "expireTime": 1493460162915,
-        "payTime": 1493373762915,
-        "qrCodeContent": null,
-        "bprice": null,
-        "refundDesc": null,
-        "refundTime": null,
-        "sysOid": "ID14933737581328325"
-      }
-    ]
-  },
-  "count": null
+    "total": 3,
+    "rows": [{
+      "orderTime": 1493956249267,
+      "id": "U101093",
+      "payTime": 1493373762915,
+      "name": "lby@test",
+      "car": "豫A1234",
+      "price": 0.01,
+      "serviceMan": "李四",
+      "orderStatus": 1
+    }]
+  }
 }

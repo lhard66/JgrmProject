@@ -87,45 +87,51 @@
       dataType: "json",
       responseHandler: function(res) {
         return {
-          "total": res.data.total, //总页数
-          "rows": res.data.rows //数据
+          "total": res.data.total,
+          "rows": res.data.rows
         };
       },
-      pagination: true, //分页
+      pagination: true,
       singleSelect: false,
-      //      data-locale:"zh-CN",
-      search: false, //显示搜索框
+      search: false,
       queryParamsType: "other",
-      sidePagination: "server", //服务端处理分页
+      sidePagination: "server",
       columns: [{
+        title: '预约时间',
+        field: 'orderTime',
+        align: 'center',
+        valign: 'middle',
+        formatter: function(value, row, index) {
+          return new Date(row.orderTime).Format("yyyy-MM-dd hh:mm:ss");
+        }
+      }, {
         title: '订单号码',
         field: 'id',
         align: 'center',
         valign: 'middle'
       }, {
         title: '下单时间',
-        field: 'createTime',
+        field: 'payTime',
         align: 'center',
         valign: 'middle',
-        formatter: function(value, row,
-          index) {
-          return new Date(row.createTime).Format("yyyy-MM-dd hh:mm:ss");
+        formatter: function(value, row, index) {
+          return new Date(row.payTime).Format("yyyy-MM-dd hh:mm:ss");
         }
       }, {
         title: '用户昵称',
         field: 'name',
         align: 'center'
       }, {
-        title: '电话',
-        field: 'phone',
-        align: 'center'
-      }, {
-        title: '服务项目',
-        field: 'orderTitle',
+        title: '保养车辆',
+        field: 'car',
         align: 'center'
       }, {
         title: '金额',
         field: 'price',
+        align: 'center'
+      }, {
+        title: '执行人',
+        field: 'serviceMan',
         align: 'center'
       }, {
         title: '状态',
@@ -174,8 +180,8 @@
 
     $("#searchForm").on('submit', function() {
       $('#dg').bootstrapTable('refresh', {
-        url: "./data/maintainSearchData.json",        
-      });      
+        url: "./data/maintainSearchData.json",
+      });
       return false;
     });
   });
@@ -185,7 +191,7 @@
       type: 2,
       area: ['540px', '520px'],
       title: "订单详情",
-      fixed: false, //不固定
+      fixed: false,
       maxmin: true,
       content: ['./maintainDetail.html', 'no']
     });
