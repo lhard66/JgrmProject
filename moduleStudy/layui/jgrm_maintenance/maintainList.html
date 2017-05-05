@@ -171,9 +171,9 @@
         formatter: function(value, row,
           index) {
           if (row.orderStatus == OrderStatus.applyrefund) {
-            return '<a href="javascript:void(0)" mce_href="#" onclick="detail(\'' + row.id + '\')">详情</a> | <a href="javascript:void(0)" mce_href="#" onclick="refund(\'' + row.id + '\')">退款</a>';
+            return '<a href="javascript:void(0)" mce_href="#" onclick="detail(\'' + row.id + '\')">详情</a> | <a href="./maintainModify.html?id=' + row.id + '">修改</a> | <a href="javascript:void(0)" mce_href="#" onclick="refund(\'' + row.id + '\')">退款</a>';
           }
-          return '<a href="javascript:void(0)" mce_href="#" onclick="detail(\'' + row.id + '\')">详情</a> ';
+          return '<a href="javascript:void(0)" mce_href="#" onclick="detail(\'' + row.id + '\')">详情</a> | <a href="./maintainModify.html?id=' + row.id + '">修改</a>';
         }
       }]
     });
