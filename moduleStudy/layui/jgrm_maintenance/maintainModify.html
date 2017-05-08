@@ -7,105 +7,211 @@
   <link rel="stylesheet" href="/car-business/static/plugins/hp/js/plugins/layui/css/layui.css">
 </head>
 <style>
-	.content{
-		margin-top: 20px;
-	}
-	.no-edit{
-		color: #D3D3D3;		
-	}
+.content {
+  margin-top: 20px;
+  width: 720px;
+}
+
+.no-edit {
+  color: #D3D3D3;
+}
+
+.car-type {
+  cursor: pointer;
+}
+
+.layui-btn-custom {
+  width: 180px;
+}
+
+.car-type-status {
+  display: none;
+}
 </style>
 
 <body>
   <div class="content">
-    <form class="layui-form" action="">
-      <div class="layui-form-item">
-        <label class="layui-form-label">订单号码</label>
-        <div class="layui-input-block">
-          <input type="text" name="id" value="U123" class="layui-input" disabled>
-        </div>
-      </div>
-      <div class="layui-form-item">
-        <label class="layui-form-label">订单状态</label>
-        <div class="layui-input-block">
-          <input type="text" value="未消费" class="layui-input" disabled>
-        </div>
-      </div>
-      <div class="layui-form-item">
-        <label class="layui-form-label">下单用户</label>
-        <div class="layui-input-block">
-          <input type="text" value="张三" class="layui-input" disabled>
-        </div>
-      </div>
-      <div class="layui-form-item">
-        <label class="layui-form-label">车辆牌号</label>
-        <div class="layui-input-block">
-          <input type="text" value="豫A1234" name="carType" class="layui-input">
-        </div>
-      </div>      
-      <div class="layui-form-item">
-        <label class="layui-form-label">车辆型号</label>
-        <div class="layui-input-block">
-          <input type="text" value="奥迪A8 土豪专用" name="carType" class="layui-input" disabled>
-        </div>
-      </div>      
-      <div class="layui-form-item">
-        <label class="layui-form-label">当前里程</label>
-        <div class="layui-input-block">
-          <input type="text" value="5000" name="distance" class="layui-input">
-        </div>
-      </div>
-      <div class="layui-form-item">
-        <label class="layui-form-label">保养类型</label>
-        <div class="layui-input-block">
-          <select name="maintainType">
-            <option value="0">小保养</option>
-            <option value="1">大保养</option>
-          </select>
-        </div>
-      </div>
-      <div class="layui-form-item">
-        <label class="layui-form-label">工时优惠</label>
-        <div class="layui-input-block">
-          <select name="sale">
-            <option value="0">不优惠</option>
-            <option value="1">9折</option>
-            <option value="2">7折</option>
-          </select>
-        </div>
-      </div>
-      <div class="layui-form-item">
-        <label class="layui-form-label">推荐机油</label>
-        <div class="layui-input-block">
-          <select name="sale">
-            <option value="0">机油一</option>
-            <option value="1">机油二</option>
-            <option value="2">机油三</option>
-          </select>
-        </div>
-      </div>      
-      <div class="layui-form-item">
-        <label class="layui-form-label">合计金额</label>
-        <div class="layui-input-block">
-          <input type="text" name="distance" value="$99" class="layui-input" disabled>
-        </div>
-      </div>
-      <div class="layui-form-item">
-        <div class="layui-input-block">
-          <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+    <div class="main">
+      <form class="layui-form" action="">
+        <div class="layui-form-item">
+          <label class="layui-form-label">订单号码：</label>
+          <div class="layui-input-block">
+            <input type="text" name="id" value="U123" class="layui-input" disabled>
           </div>
-      </div>
-    </form>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">订单状态：</label>
+          <div class="layui-input-block">
+            <input type="text" value="未消费" class="layui-input" disabled>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">下单用户：</label>
+          <div class="layui-input-block">
+            <input type="text" value="张三" class="layui-input" disabled>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">车辆牌号：</label>
+          <div class="layui-input-block">
+            <input type="text" value="豫A1234" name="carType" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">车辆型号：</label>
+          <div class="layui-input-block">
+            <input type="text" id="car_type" value="奥迪A8 土豪专用" name="carType" class="layui-input car-type" readonly>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">当前里程：</label>
+          <div class="layui-input-block">
+            <input type="text" value="5000" name="distance" class="layui-input">
+          </div>
+        </div>        
+        <div class="layui-form-item">
+          <label class="layui-form-label">保养类型：</label>
+          <div class="layui-input-block">
+            <select name="maintainType">
+              <option value="0">小保养</option>
+              <option value="1">大保养</option>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">工时优惠：</label>
+          <div class="layui-input-block">
+            <select name="sale">
+              <option value="0">不优惠</option>
+              <option value="1">9折</option>
+              <option value="2">7折</option>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">推荐机油：</label>
+          <div class="layui-input-block">
+            <select name="sale">
+              <option value="0">机油一</option>
+              <option value="1">机油二</option>
+              <option value="2">机油三</option>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">合计金额：</label>
+          <div class="layui-input-block">
+            <input type="text" name="distance" value="$99" class="layui-input" disabled>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn layui-btn-custom" lay-submit lay-filter="save">保存</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="car-type-layer car-type-status" id="car_type_layer" v-if="carTypeData!=null">
+      <form class="layui-form">
+        <div class="layui-form-item">
+          <label class="layui-form-label">品牌：</label>
+          <div class="layui-input-block">
+            <template v-for="(item,index) in carTypeData.brand">
+              <input type="radio" name="brand" :value="item" :title="item" v-model="brand">
+            </template>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">车系：</label>
+          <div class="layui-input-block">
+            <input type="radio" name="series" value="A3" title="A3" checked>
+            <input type="radio" name="series" value="A6" title="A6">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">排量：</label>
+          <div class="layui-input-block">
+            <input type="radio" name="size" value="2.0T" title="2.0" checked>
+            <input type="radio" name="size" value="2.5T" title="2.5T">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">年款：</label>
+          <div class="layui-input-block">
+            <input type="radio" name="year" value="2015" title="2015" checked>
+            <input type="radio" name="year" value="2017" title="2017">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">型号：</label>
+          <div class="layui-input-block">
+            <input type="radio" name="type" value="标准款" title="标准款">
+            <input type="radio" name="type" value="运动款" title="运动款">
+            <input type="radio" name="type" value="豪华款" title="豪华款">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="modify">修改</button>
+            <a class="layui-btn" href="javascript:void(0)" id="layer_cancel">取消</a>
+          </div>
+        </div>
+        <form>
+    </div>
   </div>
+  <script src="/car-business/static/plugins/vue/vue.js"></script>
   <script src="/car-business/static/plugins/hp/js/plugins/layui/layui.js"></script>
   <script>
-  //Demo
-  layui.use('form', function() {
+  vm = new Vue({
+    el: '#car_type_layer',
+    data: {
+      msg: 'success',
+      carTypeData: null,
+      brand:'',
+    },
+    mounted: function() {
+      var _this = this;
+      fetch('./data/maintainCarType.json').then(function(res) {
+        return res.json();
+      }).then(function(dataJson) {
+        if (dataJson.code == 200) {
+          _this.carTypeData = dataJson.data;
+        } else {
+          alert("no 200 code");
+        }
+      }).catch(function(err) {
+        alert(err);
+      })
+    }
+  })
+
+  layui.use(['form', 'jquery'], function() {
     var form = layui.form();
+    var $ = layui.jquery;
+
+    $('#car_type').on('click', function() {
+      layer.open({
+        type: 1,
+        title: '保养车型设置',
+        area: ['500px', '400px'], //宽高
+        content: $('#car_type_layer')
+      });
+      form.render();
+    });
 
     //监听提交
-    form.on('submit(formDemo)', function(data) {
-      layer.msg(JSON.stringify(data.field));
+    form.on('submit(save)', function(data) {
+      console.log(JSON.stringify(data.field));
       return false;
+    });
+    form.on('submit(modify)', function(data) {
+      console.log(JSON.stringify(data.field));
+      layer.close(layer.index);
+      return false;
+    });
+    $('#layer_cancel').on('click',function(){
+    	layer.close(layer.index);
+    	return false;
     });
   });
   </script>

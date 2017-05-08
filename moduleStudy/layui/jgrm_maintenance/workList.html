@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>业务管理</title>
   <link href="/car-business/static/plugins/hp/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
   <link href="/car-business/static/plugins/hp/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
   <link href="/car-business/static/plugins/hp/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
@@ -17,39 +17,43 @@
 </head>
 
 <body class="gray-bg">
-  <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="ibox-content">
-      <div id="tb" class="row row-lg">
-        <form id="searchForm">
-          <div class="form-group">
-            <div class="col-xs-10">
-              <div class="row">
-                <div class="col-xs-2">
-                  <input type="text" name="filter_LIKES_id" placeholder="订单号" class="form-control input-sm" />
+  <div class="content">
+    <div class="header">
+    </div>
+    <div class="wrapper wrapper-content animated fadeInRight">
+      <div class="ibox-content">
+        <div id="tb" class="row row-lg">
+          <form id="searchForm">
+            <div class="form-group">
+              <div class="col-xs-10">
+                <div class="row">
+                  <div class="col-xs-2">
+                    <input type="text" name="filter_LIKES_id" placeholder="订单号" class="form-control input-sm" />
+                  </div>
+                  <div class="col-xs-2">
+                    <input type="text" name="filter_LIKES_name" placeholder="昵称" class="form-control input-sm" />
+                  </div>
+                  <div class="col-xs-2">
+                    <input type="text" name="filter_LIKES_phone" placeholder="电话" class="form-control input-sm" />
+                  </div>
+                  <div class="col-xs-2">
+                    <input type="text" name="filter_GTL_createTime" placeholder="开始日期" class="form-control input-sm" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" />
+                  </div>
+                  <div class="col-xs-2">
+                    <input type="text" name="filter_LTL_createTime" placeholder="结束日期" class="form-control input-sm" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" />
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="fa fa-search"></i>查询
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="exportdata()">导出数据</button>
                 </div>
-                <div class="col-xs-2">
-                  <input type="text" name="filter_LIKES_name" placeholder="昵称" class="form-control input-sm" />
-                </div>
-                <div class="col-xs-2">
-                  <input type="text" name="filter_LIKES_phone" placeholder="电话" class="form-control input-sm" />
-                </div>
-                <div class="col-xs-2">
-                  <input type="text" name="filter_GTL_createTime" placeholder="开始日期" class="form-control input-sm" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" />
-                </div>
-                <div class="col-xs-2">
-                  <input type="text" name="filter_LTL_createTime" placeholder="结束日期" class="form-control input-sm" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" />
-                </div>
-                <button type="submit" class="btn btn-primary btn-sm">
-                  <i class="fa fa-search"></i>查询
-                </button>
-                <button type="button" class="btn btn-primary btn-sm" onclick="exportdata()">导出数据</button>
               </div>
             </div>
-          </div>
-        </form>
-      </div>
-      <div class="row row-lg m-t-md">
-        <table id="dg"></table>
+          </form>
+        </div>
+        <div class="row row-lg m-t-md">
+          <table id="dg"></table>
+        </div>
       </div>
     </div>
   </div>
