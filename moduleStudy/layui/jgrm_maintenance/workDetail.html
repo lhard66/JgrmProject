@@ -19,12 +19,17 @@
   cursor: pointer;
 }
 
+.car-series,
 .car-oil {
   display: none;
 }
 
 .car-oil .form-group {
   margin: 15px 0 0 0;
+}
+
+.has-feedback .form-control {
+  cursor: pointer;
 }
 </style>
 
@@ -34,7 +39,7 @@
       <form>
         <div class="form-group">
           <label for="exampleInputPassword1">套餐编号：</label>
-          <input type="text" class="form-control" placeholder="Text input">
+          <input type="text" class="form-control" readonly>
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">套餐类型：</label>
@@ -43,9 +48,10 @@
             <option>2</option>
           </select>
         </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">适用车系：</label>
-          <input type="text" class="form-control" placeholder="Text input">
+        <div class="form-group has-feedback">
+          <label class="control-label" for="inputSuccess4">适用车系：</label>
+          <input type="text" class="form-control" @click="showCarSeries" readonly>
+          <span class="glyphicon glyphicon-th-list form-control-feedback" aria-hidden="true"></span>
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">推荐机油：</label>
@@ -67,7 +73,9 @@
                 <td>图片</td>
                 <td>{{item.size}}</td>
                 <td>{{item.price}}</td>
-                <td>编缉</td>
+                <td>
+                  <a href="javascript:void(0);" @click="editRow(item.id)">编辑</a> | <a href="javascript:void(0);" @click="delRow(item.id)">删除</a>
+                </td>
               </tr>
               <tr>
                 <td colspan="6">
@@ -80,9 +88,52 @@
         <button type="submit" class="btn btn-default">提交</button>
       </form>
     </div>
+    <!-- 适合用车系 -->
+    <div class="car-series" id="car_series">
+      <form>
+        <div class="form-group">
+          <label for="exampleInputEmail1">品牌：</label>
+          <label>
+            <input type="radio" name="brand" value="option2"> A
+          </label>
+          <label>
+            <input type="radio" name="brand" value="option2"> A
+          </label>
+          <label>
+            <input type="radio" name="brand" value="option2"> A
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">类别：</label>
+          <label>
+            <input type="radio" name="brand" value="option2"> A
+          </label>
+          <label>
+            <input type="radio" name="brand" value="option2"> A
+          </label>
+          <label>
+            <input type="radio" name="brand" value="option2"> A
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">车系：</label>
+          <label>
+            <input type="radio" name="brand" value="option2"> A
+          </label>
+          <label>
+            <input type="radio" name="brand" value="option2"> A
+          </label>
+          <label>
+            <input type="radio" name="brand" value="option2"> A
+          </label>
+        </div>
+        <a href="javascript:void(0);" class="btn btn-default">保存</a>
+        <a href="javascript:void(0);" class="btn btn-default">取消</a>
+      </form>
+    </div>
     <!-- 添加机油类型部分 -->
     <div id="car_oil" class="car-oil">
-      <form class="form-horizontal" v-if="oilData!=null">
+      <form class="form-horizontal" v-if="workRow!=null&&workData!=null">
         <div class="form-group">
           <label for="inputEmail3" class="col-sm-3 control-label">机油品牌:</label>
           <div class="col-sm-9">
@@ -120,7 +171,8 @@
         </div>
         <div class="form-group">
           <div class="col-sm-offset-3 col-sm-9">
-            <a href="javascript:void(0);" @click="addConfirm" class="btn btn-default">提交</a>
+            <a href="javascript:void(0);" @click="addConfirm" class="btn btn-default" v-if="oilStatus==2">添加</a>
+            <a href="javascript:void(0);" @click="editConfirm" class="btn btn-default" v-if="oilStatus==1">修改</a>
             <a href="javascript:void(0);" @click="addCancel" class="btn btn-default">取消</a>
           </div>
         </div>
@@ -131,18 +183,18 @@
   <script src="/car-business/static/plugins/hp/js/jquery.min.js?v=2.1.4"></script>
   <script src="/car-business/static/plugins/hp/js/plugins/layer/layer.js"></script>
   <script>
-  new Vue({
+  var oilStatus = {
+    edit: 1,
+    add: 2
+  }
+  var vm = new Vue({
     el: '#app',
     data: {
-      workData: null,
-      workRow: {
-        "brand": "",
-        "type": "",
-        "size": "",
-        "price": 0
-      },
-      oilData: null,
-      indexWindow:-1,
+      workData: null, //页面列表数据
+      workRow: null, //页面某行数据
+      oilData: null, //弹窗基础数据
+      indexWindow: -1, //弹窗id
+      oilStatus: 0, //弹窗是添加按钮还是修改按钮
     },
     mounted: function() {
       var _this = this;
@@ -153,34 +205,42 @@
         _this.workData = dataJson.data;
       }).catch(function(err) {
         alert(err);
-      })
+      });
+      //加载推荐机油弹出框相关数据      
+      fetch('./data/workOilData.json').then(function(res) {
+        return res.json();
+      }).then(function(dataJson) {
+        _this.oilData = dataJson.data;
+      }).catch(function(err) {
+        alert(err);
+      });
     },
     methods: {
+      showOilLayer: function() {
+        var _workRow = {};
+        var _oilDataRow = this.oilData;
+        _workRow.id = Date.now() + Math.round(Math.random() * 10000);
+        _workRow.price = _oilDataRow.price;
+        _workRow.brand = _oilDataRow.brand[0].name;
+        _workRow.type = _oilDataRow.type[0].name;
+        _workRow.size = _oilDataRow.size[0].name;
+        this.workRow = _workRow;
+      },
       addItem: function() {
-        var _this = this;
-        _this.indexWindow=layer.open({
+        this.showOilLayer();
+        this.oilStatus = oilStatus.add;
+        this.indexWindow = layer.open({
           type: 1,
           title: '添加推荐机油',
           area: ['500px', '400px'], //宽高
           content: $('#car_oil')
         });
-        //请求数据并展示
-        fetch('./data/workOilData.json').then(function(res) {
-          return res.json();
-        }).then(function(dataJson) {
-          _this.oilData = dataJson.data;
-          var _workRow = _this.workRow;
-          var _oilDataRow = _this.oilData;
-          _workRow.price = _oilDataRow.price;
-          _workRow.brand = _oilDataRow.brand[0].name;
-          _workRow.type = _oilDataRow.type[0].name;
-          _workRow.size = _oilDataRow.size[0].name;
-        }).catch(function(err) {
-          alert(err);
-        });
       },
       addConfirm: function() {
-        this.workData.rows.push(this.workRow);
+        //对象拷贝    
+        var workRowTemp = JSON.stringify(this.workRow);
+        var newWorkRow = JSON.parse(workRowTemp);
+        this.workData.rows.push(newWorkRow);
         layer.close(this.indexWindow);
       },
       addCancel: function() {
@@ -192,6 +252,52 @@
           title: '反馈留言',
           area: ['470px', '320px'], //宽高
           content: './faceback.html'
+        });
+      },
+      delRow: function(num) {
+        console.log(num);
+        var newWorkData = [];
+        console.log(this.workData.rows);
+        this.workData.rows.forEach(function(item) {
+          if (item.id != num) {
+            newWorkData.push(item);
+          }
+        });
+        console.log(newWorkData);
+        this.workData.rows = newWorkData;
+      },
+      editRow: function(num) {
+        this.oilStatus = oilStatus.edit;
+        this.workData.rows.forEach(function(item) {
+          if (item.id == num) {
+            this.workRow = item;
+            return;
+          }
+        }, this);
+        this.indexWindow = layer.open({
+          type: 1,
+          title: '修改推荐机油',
+          area: ['500px', '400px'],
+          content: $('#car_oil')
+        });
+      },
+      editConfirm: function() {
+        var _this = this;
+        var workRowTemp = JSON.stringify(this.workRow);
+        var newWorkRow = JSON.parse(workRowTemp);
+        for (var i = 0; i < _this.workData.rows.length; i++) {
+          if (_this.workData.rows[i].id == newWorkRow.id) {
+            _this.workData.rows[i] = newWorkRow;
+          }
+        }
+        layer.close(this.indexWindow);
+      },
+      showCarSeries: function() {
+        this.indexWindow = layer.open({
+          type: 1,
+          title: '适用车系设置',
+          area: ['500px', '400px'],
+          content: $('#car_series')
         });
       }
     }

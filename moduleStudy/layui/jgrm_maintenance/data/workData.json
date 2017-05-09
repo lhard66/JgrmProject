@@ -4,18 +4,21 @@
   "data": {
     "total": 3,
     "rows": [{
+      "id":1,
       "brand": "嘉实多",
-      "type": "0w-40",
+      "type": "全合成 SM",
       "size":"4L",
       "price": 666
     }, {
+      "id":2,
       "brand": "嘉实多",
-      "type": "0m-40",
+      "type": "全合成 SL",
       "size":"2L",
       "price": 444
     }, {
+      "id":3,
       "brand": "嘉实多",
-      "type": "0s-40",
+      "type": "全合成 ML",
       "size":"1L",
       "price": 222
     }]
