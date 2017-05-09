@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>反馈留言</title>
+  <link href="/car-business/static/plugins/hp/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+  <style>
+  .content {
+    width: 420px;
+    height: 300px;
+    margin: 20px 15px;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="content" id="page">
+    <form>
+      <div class="form-group">
+        <textarea class="form-control" rows="9" v-model="facebackMsg"></textarea>
+      </div>
+      <a href="javascript:void(0);" class="btn btn-default" @click="confirm">提交</a>
+      <a href="javascript:void(0);" class="btn btn-default" @click="cancel">取消</a>
+    </form>
+  </div>
+</body>
+<script src="/car-business/static/plugins/vue/vue.js"></script>
+<script src="/car-business/static/plugins/hp/js/jquery.min.js?v=2.1.4"></script>
+<script src="/car-business/static/plugins/hp/js/plugins/layer/layer.js"></script>
+<script>
+vm = new Vue({
+  el: '#page',
+  data: {
+    facebackMsg: '',
+  },
+  methods: {
+    confirm: function() {
+      if (this.facebackMsg != '') {
+        var _this = this;
+        $.post('./data/returnOk.json', function(data) {
+          if (data.code == 200) {
+            layer.msg(data.msg, {
+              time: 2000,
+              icon: 1,
+            }, function() {
+              _this.cancel();
+            });
+          } else {
+            layer.msg('提交失败，请刷新重试！', {
+              time: 2000,
+              icon: 2
+            });
+          }
+        });
+      } else {
+        layer.msg('反馈信息不能为空！');
+      }
+    },
+    cancel: function() {
+      var index = parent.layer.getFrameIndex(window.name);
+      parent.layer.close(index);
+    },
+  }
+})
+</script>
+
+</html>

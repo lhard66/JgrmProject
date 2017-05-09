@@ -4,7 +4,6 @@
 <head>
   <meta charset="utf-8">
   <title>保养信息修改</title>
-  <link rel="stylesheet" href="/car-business/static/plugins/hp/js/plugins/layui/css/layui.css">
   <link href="/car-business/static/plugins/hp/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
 </head>
 <style>
@@ -19,8 +18,13 @@
   height: 100%;
   cursor: pointer;
 }
-.car-oil{
+
+.car-oil {
   display: none;
+}
+
+.car-oil .form-group {
+  margin: 15px 0 0 0;
 }
 </style>
 
@@ -76,46 +80,49 @@
         <button type="submit" class="btn btn-default">提交</button>
       </form>
     </div>
+    <!-- 添加机油类型部分 -->
     <div id="car_oil" class="car-oil">
-      <form class="form-horizontal">
+      <form class="form-horizontal" v-if="oilData!=null">
         <div class="form-group">
           <label for="inputEmail3" class="col-sm-3 control-label">机油品牌:</label>
           <div class="col-sm-9">
-            <select class="form-control">
-              <option>1</option>
-              <option>2</option>
+            <select class="form-control" v-model="workRow.brand">
+              <option v-for="item in oilData.brand">{{item.name}}</option>
             </select>
           </div>
         </div>
         <div class="form-group">
           <label for="inputEmail3" class="col-sm-3 control-label">机油型号:</label>
           <div class="col-sm-9">
-            <select class="form-control">
-              <option>1</option>
-              <option>2</option>
+            <select class="form-control" v-model="workRow.type">
+              <option v-for="item in oilData.type">{{item.name}}</option>
             </select>
           </div>
         </div>
         <div class="form-group">
           <label for="inputEmail3" class="col-sm-3 control-label">包装规格:</label>
           <div class="col-sm-9">
-            <select class="form-control">
-              <option>1</option>
-              <option>2</option>
+            <select class="form-control" v-model="workRow.size">
+              <option v-for="item in oilData.size">{{item.name}}</option>
             </select>
           </div>
         </div>
         <div class="form-group">
           <label for="inputEmail3" class="col-sm-3 control-label">配件定价:</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" placeholder="请输入价格">
+            <input type="text" class="form-control" v-model="workRow.price" placeholder="请输入价格">
           </div>
         </div>
         <div class="form-group">
           <div class="col-sm-offset-3 col-sm-9">
-            <button type="submit" class="btn btn-default">提交</button>
-          <button type="submit" class="btn btn-default">取消</button>
-          </div>          
+            <span>找不到需要的型号？</span><a href="javascript:void(0);" @click="faceback">点这里留言反馈</a>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-9">
+            <a href="javascript:void(0);" @click="addConfirm" class="btn btn-default">提交</a>
+            <a href="javascript:void(0);" @click="addCancel" class="btn btn-default">取消</a>
+          </div>
         </div>
       </form>
     </div>
@@ -128,6 +135,14 @@
     el: '#app',
     data: {
       workData: null,
+      workRow: {
+        "brand": "",
+        "type": "",
+        "size": "",
+        "price": 0
+      },
+      oilData: null,
+      indexWindow:-1,
     },
     mounted: function() {
       var _this = this;
@@ -142,11 +157,41 @@
     },
     methods: {
       addItem: function() {
-        layer.open({
+        var _this = this;
+        _this.indexWindow=layer.open({
           type: 1,
           title: '添加推荐机油',
           area: ['500px', '400px'], //宽高
           content: $('#car_oil')
+        });
+        //请求数据并展示
+        fetch('./data/workOilData.json').then(function(res) {
+          return res.json();
+        }).then(function(dataJson) {
+          _this.oilData = dataJson.data;
+          var _workRow = _this.workRow;
+          var _oilDataRow = _this.oilData;
+          _workRow.price = _oilDataRow.price;
+          _workRow.brand = _oilDataRow.brand[0].name;
+          _workRow.type = _oilDataRow.type[0].name;
+          _workRow.size = _oilDataRow.size[0].name;
+        }).catch(function(err) {
+          alert(err);
+        });
+      },
+      addConfirm: function() {
+        this.workData.rows.push(this.workRow);
+        layer.close(this.indexWindow);
+      },
+      addCancel: function() {
+        layer.close(this.indexWindow);
+      },
+      faceback: function() {
+        layer.open({
+          type: 2,
+          title: '反馈留言',
+          area: ['470px', '320px'], //宽高
+          content: './faceback.html'
         });
       }
     }
