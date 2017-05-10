@@ -79,10 +79,7 @@
                 <div class="row">
                   <div class="col-xs-4">
                     <label class="">套餐类型：</label>
-                    <select name="type">
-                      <option value="2">小保养</option>
-                      <option value="3">中保养</option>
-                      <option value="4">大保养</option>
+                    <select name="type" id="work_type">
                     </select>
                   </div>
                   <div class="col-xs-4">
@@ -173,12 +170,22 @@
         }]
       });
 
+      //加载保养类型
+      $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {
+        res.data.forEach(function(item) {
+          $('#work_type').append('<option value="' + item.id + '">' + item.name + '</option>');
+        });
+      }).error(function(){
+        layer.msg('搜索保养类型选择列表加载失败！');
+      });
+
       $("#searchForm").on('submit', function() {
         $('#dg').bootstrapTable('refresh', {
           url: "./data/workData.json",
         });
         return false;
       });
+
     });
 
     function detail(id) {

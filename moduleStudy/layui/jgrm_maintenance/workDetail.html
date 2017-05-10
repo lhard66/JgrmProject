@@ -21,7 +21,7 @@
 
 .car-series,
 .car-oil {
-  display: none;
+  /*display: none;*/
 }
 
 .car-oil .form-group {
@@ -118,37 +118,40 @@
     </div>
     <!-- 添加机油类型部分 -->
     <div id="car_oil" class="car-oil">
-      <form class="form-horizontal" v-if="workRow!=null&&workData!=null">
+      <form class="form-horizontal" v-if="oilData.brand!=undefined">
         <div class="form-group">
-          <label for="inputEmail3" class="col-sm-3 control-label">机油品牌:</label>
+          <label class="col-sm-3 control-label">机油品牌:</label>
           <div class="col-sm-9">
-            <select class="form-control" v-model="workRow.brand">
-              <option v-for="item in oilData.brand">{{item.name}}</option>
+            <select class="form-control" @change="selOilBrand">
+              <option selected :value="-1">请选择机油品牌</option>
+              <option v-for="item in oilData.brand" :value="item.id">{{item.title}}</option>
             </select>
           </div>
         </div>
         <div class="form-group">
-          <label for="inputEmail3" class="col-sm-3 control-label">机油型号:</label>
+          <label class="col-sm-3 control-label">机油型号:</label>
           <div class="col-sm-9">
-            <select class="form-control" v-model="workRow.type">
-              <option v-for="item in oilData.type">{{item.name}}</option>
+            <select class="form-control">
+              <option selected :value="-1">请选择机油型号</option>
+              <option v-for="item in oilData.type" :value="item.id">{{item.title}}</option>
             </select>
           </div>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="inputEmail3" class="col-sm-3 control-label">包装规格:</label>
           <div class="col-sm-9">
-            <select class="form-control" v-model="workRow.size">
+            <select class="form-control">
+              <option selected>请选择机油规格</option>
               <option v-for="item in oilData.size">{{item.name}}</option>
             </select>
           </div>
-        </div>
-        <div class="form-group">
+        </div> -->
+        <!-- <div class="form-group">
           <label for="inputEmail3" class="col-sm-3 control-label">配件定价:</label>
           <div class="col-sm-9">
             <input type="text" class="form-control" v-model="workRow.price" placeholder="请输入价格">
           </div>
-        </div>
+        </div> -->
         <div class="form-group">
           <div class="col-sm-offset-3 col-sm-9">
             <span>找不到需要的型号？</span><a href="javascript:void(0);" @click="faceback">点这里留言反馈</a>
@@ -176,9 +179,15 @@
   var vm = new Vue({
     el: '#app',
     data: {
-      workData: null, //页面列表数据
-      workRow: null, //页面某行数据
-      oilData: null, //弹窗基础数据
+      workData: {}, //页面列表数据
+      workRow: {
+        brand: -1,
+        type: -1,
+      }, //页面某行数据
+      oilData: {
+        brand: null,
+        type: null,
+      }, //弹窗基础数据
       indexWindow: -1, //弹窗id
       oilStatus: 0, //弹窗是添加按钮还是修改按钮
       seriesBrandData: null, //适用车型品牌数据，原始
@@ -187,6 +196,7 @@
       seriesOthersType: [], //适用车型类型数据，仅类型名
       seriesOthersGroupInName: [], //第三组中的名字
       seriesItem: null, //适用车型的某一项数据
+      test: -1,
     },
     mounted: function() {
       var _this = this;
@@ -198,13 +208,9 @@
       }).catch(function(err) {
         alert(err);
       });
-      //加载推荐机油弹出框相关数据      
-      fetch('./data/workOilData.json').then(function(res) {
-        return res.json();
-      }).then(function(dataJson) {
-        _this.oilData = dataJson.data;
-      }).catch(function(err) {
-        alert(err);
+      //加载推荐机油弹出框，机油品牌数据      
+      $.getJSON('/car-business/car/maintance/parts/brand/list', function(res) {
+        _this.oilData.brand = res.data;
       });
     },
     methods: {
@@ -219,7 +225,7 @@
         this.workRow = _workRow;
       },
       addItem: function() {
-        this.showOilLayer();
+        // this.showOilLayer();
         this.oilStatus = oilStatus.add;
         this.indexWindow = layer.open({
           type: 1,
@@ -329,9 +335,16 @@
         }
         //2.显示数据
       },
-      selSeriesCar:function(){
+      selSeriesCar: function() {
 
       },
+      selOilBrand: function(id) {
+        var _this = this;
+        $.getJSON('/car-business/car/maintance/parts/model/list?brandId=1', function(res) {
+          console.log(res.data);
+          _this.oilData.type = res.data;
+        })
+      }
     }
   })
   </script>

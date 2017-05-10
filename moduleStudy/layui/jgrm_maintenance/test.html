@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>test</title>
+</head>
+
+<body>
+  <div id="app">
+    <select v-model="selected">
+      <option v-for="option in options" v-bind:value="option.id">
+        {{ option.name }}
+      </option>
+    </select>
+    <span>Selected: {{ selected }}</span>
+  </div>
+  <script src="/car-business/static/plugins/vue/vue.js"></script>
+  <script>
+  new Vue({
+    el: '#app',
+    data: {
+      selected: 2,
+      options: [{
+        name: 'One',
+        id: 1
+      }, {
+        name: 'Two',
+        id: 2
+      }, {
+        name: 'Three',
+        id: 3
+      }]
+    }
+  })
+  </script>
+</body>
+
+</html>
