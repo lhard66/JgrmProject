@@ -93,27 +93,23 @@
       <form>
         <div class="form-group">
           <label>品牌：</label>
-          <label v-for="item in seriesBrandData">            
-              <input type="radio" name="brand" :value="item.id" v-model="seriesItem.brand" @click.stop="selBrand">
-              <span> {{item.brand}} </span>            
+          <label v-for="item in seriesBrandData">
+            <input type="radio" name="brand" :value="item.id" v-model="seriesItem.brand" @click.stop="selBrand">
+            <span> {{item.brand}} </span>
           </label>
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">类别：</label>
-          <label>
-            <input type="radio" name="brand" value="option2"> A
+          <label v-for="item in seriesOthersType">
+            <input type="radio" name="type" :value="item" @click="selType(item)">
+            <span>{{item}}</span>
           </label>
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">车系：</label>
-          <label>
-            <input type="radio" name="brand" value="option2"> A
-          </label>
-          <label>
-            <input type="radio" name="brand" value="option2"> A
-          </label>
-          <label>
-            <input type="radio" name="brand" value="option2"> A
+          <label v-for="item in seriesOthersGroupInName">
+            <input type="radio" name="seriesCar" :value="item.seriesid" @click="selSeriesCar">
+            <span>{{item.seriesName}}</span>
           </label>
         </div>
         <a href="javascript:void(0);" class="btn btn-default">保存</a>
@@ -170,6 +166,7 @@
   </div>
   <script src="/car-business/static/plugins/vue/vue.js"></script>
   <script src="/car-business/static/plugins/hp/js/jquery.min.js?v=2.1.4"></script>
+  <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.js"></script>
   <script src="/car-business/static/plugins/hp/js/plugins/layer/layer.js"></script>
   <script>
   var oilStatus = {
@@ -184,8 +181,11 @@
       oilData: null, //弹窗基础数据
       indexWindow: -1, //弹窗id
       oilStatus: 0, //弹窗是添加按钮还是修改按钮
-      seriesBrandData: null, //适用车型品牌数据
-      seriesOthersData: null, //适用车型其它数据
+      seriesBrandData: null, //适用车型品牌数据，原始
+      seriesOthersData: null, //适用车型其它数据，原始
+      seriesOthersGroupData: null, //适用车型分组后
+      seriesOthersType: [], //适用车型类型数据，仅类型名
+      seriesOthersGroupInName: [], //第三组中的名字
       seriesItem: null, //适用车型的某一项数据
     },
     mounted: function() {
@@ -302,16 +302,36 @@
           content: $('#car_series')
         });
       },
-      selBrand:function(){
-        //1.请求数据
+      selBrand: function() {
+        //1.请求数据     
+        var _this = this;
+        console.log(this.seriesItem.brand);
+        fetch('./data/workSeriesOthers.json').then(function(res) {
+          return res.json();
+        }).then(function(dataJson) {
+          _this.seriesOthersData = dataJson.data.rows;
+          _this.seriesOthersGroupData = _.groupBy(_this.seriesOthersData, function(n) {
+            return n.seriesType;
+          });
+          //2.解析数据显示第三行。
+          _this.seriesOthersType = Object.keys(_this.seriesOthersGroupData);
+        });
 
-        //2.解析数据显示第三行。
       },
-      selType:function(){
+      selType: function(name) {
         //1.解析数据
-
+        var _this = this;
+        for (var itemKey in this.seriesOthersGroupData) {
+          if (itemKey == name) {
+            _this.seriesOthersGroupInName = this.seriesOthersGroupData[itemKey];
+            return;
+          }
+        }
         //2.显示数据
-      }
+      },
+      selSeriesCar:function(){
+
+      },
     }
   })
   </script>
