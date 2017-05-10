@@ -92,25 +92,14 @@
     <div class="car-series" id="car_series">
       <form>
         <div class="form-group">
-          <label for="exampleInputEmail1">品牌：</label>
-          <label>
-            <input type="radio" name="brand" value="option2"> A
-          </label>
-          <label>
-            <input type="radio" name="brand" value="option2"> A
-          </label>
-          <label>
-            <input type="radio" name="brand" value="option2"> A
+          <label>品牌：</label>
+          <label v-for="item in seriesBrandData">            
+              <input type="radio" name="brand" :value="item.id" v-model="seriesItem.brand" @click.stop="selBrand">
+              <span> {{item.brand}} </span>            
           </label>
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">类别：</label>
-          <label>
-            <input type="radio" name="brand" value="option2"> A
-          </label>
-          <label>
-            <input type="radio" name="brand" value="option2"> A
-          </label>
           <label>
             <input type="radio" name="brand" value="option2"> A
           </label>
@@ -195,6 +184,9 @@
       oilData: null, //弹窗基础数据
       indexWindow: -1, //弹窗id
       oilStatus: 0, //弹窗是添加按钮还是修改按钮
+      seriesBrandData: null, //适用车型品牌数据
+      seriesOthersData: null, //适用车型其它数据
+      seriesItem: null, //适用车型的某一项数据
     },
     mounted: function() {
       var _this = this;
@@ -270,7 +262,10 @@
         this.oilStatus = oilStatus.edit;
         this.workData.rows.forEach(function(item) {
           if (item.id == num) {
-            this.workRow = item;
+            var workRowTemp = JSON.stringify(item);
+            console.log(workRowTemp);
+            var newWorkRow = JSON.parse(workRowTemp);
+            this.workRow = newWorkRow;
             return;
           }
         }, this);
@@ -287,18 +282,35 @@
         var newWorkRow = JSON.parse(workRowTemp);
         for (var i = 0; i < _this.workData.rows.length; i++) {
           if (_this.workData.rows[i].id == newWorkRow.id) {
-            _this.workData.rows[i] = newWorkRow;
+            _this.$set(_this.workData.rows, i, newWorkRow);
           }
         }
         layer.close(this.indexWindow);
       },
       showCarSeries: function() {
+        var _this = this;
+        this.seriesItem = {};
+        fetch('./data/workSeriesBrand.json').then(function(res) {
+          return res.json();
+        }).then(function(dataJson) {
+          _this.seriesBrandData = dataJson.data.rows;
+        });
         this.indexWindow = layer.open({
           type: 1,
           title: '适用车系设置',
           area: ['500px', '400px'],
           content: $('#car_series')
         });
+      },
+      selBrand:function(){
+        //1.请求数据
+
+        //2.解析数据显示第三行。
+      },
+      selType:function(){
+        //1.解析数据
+
+        //2.显示数据
       }
     }
   })

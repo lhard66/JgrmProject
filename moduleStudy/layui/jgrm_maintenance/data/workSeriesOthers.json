@@ -1,0 +1,38 @@
+{
+  "code": 200,
+  "msg": "成功",
+  "data": {
+    "total": 3,
+    "rows": [{
+      "brandId": 1,
+      "brandName": "奥迪",
+      "seriesType": "一汽奥迪",
+      "seriesId": 1,
+      "seriesName": "A6L"
+    }, {
+      "brandId": 1,
+      "brandName": "奥迪",
+      "seriesType": "一汽奥迪",
+      "seriesId": 2,
+      "seriesName": "A4L"
+    },{
+      "brandId":1,
+      "brandName":"奥迪",
+      "seriesType":"一汽奥迪",
+      "seriesId":3,
+      "seriesName":"A8" 
+    },{
+      "brandId":1,
+      "brandName":"奥迪",
+      "seriesType":"进口奥迪",
+      "seriesId":4,
+      "seriesName":"R8" 
+    },{
+      "brandId":1,
+      "brandName":"奥迪",
+      "seriesType":"进口奥迪",
+      "seriesId":5,
+      "seriesName":"TT" 
+    }]
+  }
+}
