@@ -19,10 +19,27 @@
   cursor: pointer;
 }
 
-.car-series,
-.car-oil {
-  /*display: none;*/
+
+/*选择车型部分开始*/
+
+.car-series {
+  display: none;
+  margin: 20px;
 }
+
+.car-series .cartype-content>label {
+  font-weight: normal;
+  margin-right: 30px;
+  cursor: pointer;
+}
+
+.btn {
+  margin-top: 6px;
+  width: 100px;
+}
+
+
+/*选择车型部分结束*/
 
 .car-oil .form-group {
   margin: 15px 0 0 0;
@@ -44,14 +61,15 @@
         <div class="form-group">
           <label for="exampleInputEmail1">套餐类型：</label>
           <select class="form-control">
-            <option>1</option>
-            <option>2</option>
+            <option v-for="item in maintainType" :value="item.id">{{item.name}}</option>
           </select>
         </div>
         <div class="form-group has-feedback">
           <label class="control-label" for="inputSuccess4">适用车系：</label>
           <input type="text" class="form-control" @click="showCarSeries" readonly>
           <span class="glyphicon glyphicon-th-list form-control-feedback" aria-hidden="true"></span>
+          <input type="hidden" name="carBrandId" :value="seriesItemAllData.brandId">
+          <input type="hidden" name="carSeriesId" :value="seriesItemAllData.seriesId">
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">推荐机油：</label>
@@ -91,29 +109,37 @@
     <!-- 适合用车系 -->
     <div class="car-series" id="car_series">
       <form>
-        <div class="form-group">
+        <div>
           <label>品牌：</label>
-          <label v-for="item in seriesBrandData">
-            <input type="radio" name="brand" :value="item.id" v-model="seriesItem.brand" @click.stop="selBrand">
-            <span> {{item.brand}} </span>
-          </label>
+          <div class="cartype-content">
+            <label v-for="item in seriesBrandData">
+              <input type="radio" name="brand" @change="selBrand(item.carBrandId)" :value="item.carBrandId">
+              <span>{{item.carBrandName}}</span>
+            </label>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="exampleInputEmail1">类别：</label>
-          <label v-for="item in seriesOthersType">
-            <input type="radio" name="type" :value="item" @click="selType(item)">
-            <span>{{item}}</span>
-          </label>
+        <div v-if="seriesOthersTypeName!=null">
+          <label>类别：</label>
+          <div class="cartype-content">
+            <label v-for="item in seriesOthersTypeName">
+              <input type="radio" name="type" :value="item" @change="selType(item)">
+              <span>{{item}}</span>
+            </label>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="exampleInputEmail1">车系：</label>
-          <label v-for="item in seriesOthersGroupInName">
-            <input type="radio" name="seriesCar" :value="item.seriesid" @click="selSeriesCar">
-            <span>{{item.seriesName}}</span>
-          </label>
+        <div v-if="seriesOthersGroupInObjCar!=null">
+          <label>车系：</label>
+          <div class="cartype-content">
+            <label v-for="item in seriesOthersGroupInObjCar">
+              <input type="radio" name="seriesCar" :value="item" v-model="seriesItemAllData">
+              <span>{{item.series}}</span>
+            </label>
+          </div>
         </div>
-        <a href="javascript:void(0);" class="btn btn-default">保存</a>
-        <a href="javascript:void(0);" class="btn btn-default">取消</a>
+        <div class="btn">
+          <a href="javascript:void(0);" class="btn btn-default" @click="saveSeries">保存</a>
+          <a href="javascript:void(0);" class="btn btn-default" @click="cancelSeries">取消</a>
+        </div>
       </form>
     </div>
     <!-- 添加机油类型部分 -->
@@ -169,7 +195,7 @@
   </div>
   <script src="/car-business/static/plugins/vue/vue.js"></script>
   <script src="/car-business/static/plugins/hp/js/jquery.min.js?v=2.1.4"></script>
-  <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.js"></script>
+  <script src="./js/lodash.min.js"></script>
   <script src="/car-business/static/plugins/hp/js/plugins/layer/layer.js"></script>
   <script>
   var oilStatus = {
@@ -179,6 +205,7 @@
   var vm = new Vue({
     el: '#app',
     data: {
+      maintainType: null,
       workData: {}, //页面列表数据
       workRow: {
         brand: -1,
@@ -193,13 +220,21 @@
       seriesBrandData: null, //适用车型品牌数据，原始
       seriesOthersData: null, //适用车型其它数据，原始
       seriesOthersGroupData: null, //适用车型分组后
-      seriesOthersType: [], //适用车型类型数据，仅类型名
-      seriesOthersGroupInName: [], //第三组中的名字
-      seriesItem: null, //适用车型的某一项数据
-      test: -1,
+      seriesOthersTypeName: null, //适用车型类型数据，第二组的名字，仅类型名
+      seriesOthersGroupInObjCar: null, //第三组中的名字
+      seriesItemAllData: {
+        brandId: -1,
+        seriesId: -1,
+      }, //选中具体车系的所有数据
+      test: null,
     },
     mounted: function() {
       var _this = this;
+      //获取保养类型列表
+      $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {
+        console.log(res);
+        _this.maintainType = res.data;
+      });
       //拿到列表数据
       fetch('./data/workData.json').then(function(res) {
         return res.json();
@@ -293,51 +328,70 @@
         }
         layer.close(this.indexWindow);
       },
+      //选择车型部分
       showCarSeries: function() {
         var _this = this;
-        this.seriesItem = {};
-        fetch('./data/workSeriesBrand.json').then(function(res) {
-          return res.json();
-        }).then(function(dataJson) {
-          _this.seriesBrandData = dataJson.data.rows;
+        $.getJSON('/car-business/car/maintance/own/brand/list', function(res) {
+          _this.seriesBrandData = res.data;
         });
         this.indexWindow = layer.open({
           type: 1,
           title: '适用车系设置',
-          area: ['500px', '400px'],
+          area: ['730px', '450px'],
           content: $('#car_series')
         });
       },
-      selBrand: function() {
-        //1.请求数据     
+      selBrand: function(carBrandId) {
+        //将第二级和第三级设置为null
+        this.seriesOthersTypeName = null;
+        this.seriesOthersGroupInObjCar = null;
         var _this = this;
-        console.log(this.seriesItem.brand);
-        fetch('./data/workSeriesOthers.json').then(function(res) {
-          return res.json();
-        }).then(function(dataJson) {
-          _this.seriesOthersData = dataJson.data.rows;
-          _this.seriesOthersGroupData = _.groupBy(_this.seriesOthersData, function(n) {
-            return n.seriesType;
-          });
-          //2.解析数据显示第三行。
-          _this.seriesOthersType = Object.keys(_this.seriesOthersGroupData);
-        });
+        $.getJSON('/car-business/car/car/series/list?brandId=' + carBrandId, function(res) {
+          _this.seriesOthersData = res.data;
+          _this.seriesOthersGroupData =
+            _.groupBy(_this.seriesOthersData, function(item) {
+              return item.manufacturer;
+            });
+          _this.seriesOthersTypeName = Object.keys(_this.seriesOthersGroupData);
+        })
+
+        // fetch('./data/workSeriesOthers.json').then(function(res) {
+        //   return res.json();
+        // }).then(function(dataJson) {
+        //   _this.seriesOthersData = dataJson.data.rows;
+        //   _this.seriesOthersGroupData = _.groupBy(_this.seriesOthersData, function(n) {
+        //     return n.seriesType;
+        //   });
+        //   //2.解析数据显示第三行。
+        //   _this.seriesOthersType = Object.keys(_this.seriesOthersGroupData);
+        // });
 
       },
       selType: function(name) {
-        //1.解析数据
+        //将第三级设置为空
+        this.seriesOthersGroupInObjCar = null;
         var _this = this;
         for (var itemKey in this.seriesOthersGroupData) {
           if (itemKey == name) {
-            _this.seriesOthersGroupInName = this.seriesOthersGroupData[itemKey];
+            _this.seriesOthersGroupInObjCar = this.seriesOthersGroupData[itemKey];
             return;
           }
         }
-        //2.显示数据
       },
-      selSeriesCar: function() {
-
+      saveSeries: function() {
+        if (this.seriesItemAllData.seriesId != -1 && this.seriesItemAllData.brandId) {
+          //隐藏对话框
+          layer.close(this.indexWindow);
+        } else {
+          layer.msg('请选择保养车型！', {
+            icon: 2
+          });
+        }
       },
+      cancelSeries: function() {
+        layer.close(this.indexWindow);
+      },
+      //选择车型部分结束
       selOilBrand: function(id) {
         var _this = this;
         $.getJSON('/car-business/car/maintance/parts/model/list?brandId=1', function(res) {
