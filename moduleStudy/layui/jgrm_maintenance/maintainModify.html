@@ -12,25 +12,29 @@
   width: 720px;
 }
 
-.no-edit {
-  color: #D3D3D3;
+.car-type-layer {
+  display: none;
+  margin: 20px;
 }
 
-.car-type {
+.car-type-layer .car-type-content>label {
+  font-weight: normal;
+  margin-right: 30px;
   cursor: pointer;
 }
 
-.layui-btn-custom {
-  width: 180px;
+.btn {
+  margin-top: 6px;
+  width: 100px;
 }
 
-.car-type-status {
-  display: none;
+.has-feedback .form-control {
+  cursor: pointer;
 }
 </style>
 
 <body>
-  <div class="content">
+  <div class="content" id="maintain_page">
     <div class="main-content">
       <form>
         <div class="form-group">
@@ -45,13 +49,14 @@
           <label>下单用户：</label>
           <input type="text" value="张三" class="form-control" disabled>
         </div>
-        <div class="form-group">
+        <div class="form-group has-feedback">
           <label>车辆牌号：</label>
-          <input type="text" value="豫A1234" name="carType" class="form-control">
+          <input type="text" class="form-control" @click="showCarType" readonly>
+          <span class="glyphicon glyphicon-th-list form-control-feedback" aria-hidden="true"></span>
+          <input type="hidden" name="carTypeId" :value="carTypeItemAllData.id">
         </div>
         <div class="form-group">
-          <label>车辆型号：</label>
-          <input type="text" id="car_type" value="奥迪A8 土豪专用" name="carType" class="form-control" readonly>
+          <input type="text" value="豫A1234" name="carType" class="form-control">
         </div>
         <div class="form-group">
           <label>当前里程：</label>
@@ -60,8 +65,7 @@
         <div class="form-group">
           <label>保养类型：</label>
           <select name="maintainType" class="form-control">
-            <option value="0">小保养</option>
-            <option value="1">大保养</option>
+            <option v-for="item in maintainType" :value="item.id">{{item.name}}</option>            
           </select>
         </div>
         <div class="form-group">
@@ -87,30 +91,157 @@
         <button type="submit" class="btn btn-default">提交</button>
       </form>
     </div>
+    <!-- 选择车型开始 -->
+    <div class="car-type-layer" id="car_type">
+      <div>
+        <label>品牌：</label>
+        <div class="car-type-content">
+          <label v-for="item in carTypeBrandData">
+            <input type="radio" name="brand" :value="item.carBrandId" @change="selCarBrand(item.carBrandId)">
+            <span>{{item.carBrandName}}</span>
+          </label>
+        </div>
+      </div>
+      <div v-if="carTypeGroupBySeriesNames.length>0">
+        <label>车系：</label>
+        <div class="car-type-content">
+          <label v-for="item in carTypeGroupBySeriesNames">
+            <input type="radio" name="series" :value="item" @change="selCarSeries(item)">
+            <span>{{item}}</span>
+          </label>
+        </div>
+      </div>
+      <div v-if="carTypeGroupBySerieseMissionsNames.length>0">
+        <label>排量：</label>
+        <div class="car-type-content">
+          <label v-for="item in carTypeGroupBySerieseMissionsNames">
+            <input type="radio" name="missions" :value="item" @change="selCarMissions(item)">
+            <span>{{item}}</span>
+          </label>
+        </div>
+      </div>
+      <div v-if="carTypeGroupBySerieseMissionsYearNames.length>0">
+        <label>年款：</label>
+        <div class="car-type-content">
+          <label v-for="item in carTypeGroupBySerieseMissionsYearNames">
+            <input type="radio" name="years" :value="item" @change="selCarYears(item)">
+            <span>{{item}}</span>
+          </label>
+        </div>
+      </div>
+      <div v-if="carTypeGroupBySerieseMissionsYearType.length>0">
+        <label>型号：</label>
+        <div class="car-type-content">
+          <label v-for="item in carTypeGroupBySerieseMissionsYearType">
+            <input type="radio" name="type" :value="item.id" @change="selCarType(item)">
+            <span>{{item.type}}</span>
+          </label>
+        </div>
+      </div>
+      <div class="btn">
+        <a href="javascript:void(0);" class="btn btn-default" @click="saveCarType">保存</a>
+        <a href="javascript:void(0);" class="btn btn-default" @click="cancelCarType">取消</a>
+      </div>
+    </div>
+    <!-- 选择车型结束 -->
   </div>
   <script src="/car-business/static/plugins/vue/vue.js"></script>
-  <script src="/car-business/static/plugins/hp/js/plugins/layui/layui.js"></script>
+  <script src="/car-business/static/plugins/hp/js/jquery.min.js?v=2.1.4"></script>
+  <script src="./js/lodash.min.js"></script>
+  <script src="/car-business/static/plugins/hp/js/plugins/layer/layer.js"></script>
   <script>
   vm = new Vue({
-    el: '#car_type_layer',
+    el: '#maintain_page',
     data: {
-      msg: 'success',
-      carTypeData: null,
-      brand: '',
+      indexWindow: -1,
+      maintainType: null,
+      carTypeBrandData: null, //汽车品牌数据
+      carTypeOthersData: null, //汽车品牌外的其它数据
+      carTypeGroupBySeries: null, //以车系分组数据
+      carTypeGroupBySeriesNames: [], //以车系分组的组名数组
+      carTypeGroupBySerieseMissions: [], //以车系和排量分组
+      carTypeGroupBySerieseMissionsNames: [], //以车系和排量分组的排量数组
+      carTypeGroupBySerieseMissionsYear: [], //以车系、排量、年款分组
+      carTypeGroupBySerieseMissionsYearNames: [], //以车系、排量和年款分组的年款数组
+      carTypeGroupBySerieseMissionsYearType: [], //以车系、排量、年款和型号分组
+      carTypeGroupBySerieseMissionsYearTypeNames: [], //以车系、排量、年款和型号分组组名
+      carTypeItemAllData: {
+        id: -1,
+      }, //最终需要的车型对象
     },
     mounted: function() {
+      //加载保养类型
       var _this = this;
-      fetch('./data/maintainCarType.json').then(function(res) {
-        return res.json();
-      }).then(function(dataJson) {
-        if (dataJson.code == 200) {
-          _this.carTypeData = dataJson.data;
+      $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {
+        _this.maintainType = res.data;
+      }).error(function() {
+        layer.msg('搜索保养类型选择列表加载失败！');
+      });
+    },
+    methods: {
+      //选择车型部分开始
+      showCarType: function() {
+        var _this = this;
+        $.getJSON('/car-business/car/maintance/own/brand/list', function(res) {
+          console.log(res.data);
+          _this.carTypeBrandData = res.data;
+        });
+
+        this.indexWindow = layer.open({
+          type: 1,
+          title: '保养车型设置',
+          area: ['850px', '500px'],
+          content: $('#car_type')
+        });
+      },
+      selCarBrand: function(brandId) {
+        this.carTypeGroupBySerieseMissionsNames = [];
+        this.carTypeGroupBySerieseMissionsYearNames = [];
+        this.carTypeGroupBySerieseMissionsYearType = [];
+        var _this = this;
+        $.getJSON('/car-business/car/car/model/list?brandId=' + brandId, function(res) {
+          _this.carTypeOthersData = res.data;
+          _this.carTypeGroupBySeries = _.groupBy(_this.carTypeOthersData, function(item) {
+            return item.manufacturer;
+          });
+          _this.carTypeGroupBySeriesNames = Object.keys(_this.carTypeGroupBySeries);
+        })
+      },
+      selCarSeries: function(seriesName) {
+        this.carTypeGroupBySerieseMissionsYearNames = [];
+        this.carTypeGroupBySerieseMissionsYearType = [];
+        this.carTypeGroupBySerieseMissions = _.groupBy(this.carTypeGroupBySeries[seriesName], function(item) {
+          return item.emissions_l;
+        })
+        this.carTypeGroupBySerieseMissionsNames = Object.keys(this.carTypeGroupBySerieseMissions);
+      },
+      selCarMissions: function(missionName) {
+        this.carTypeGroupBySerieseMissionsYearType = [];
+        this.carTypeGroupBySerieseMissionsYear = _.groupBy(this.carTypeGroupBySerieseMissions[missionName], function(item) {
+          return item.years;
+        })
+        this.carTypeGroupBySerieseMissionsYearNames = Object.keys(this.carTypeGroupBySerieseMissionsYear);
+      },
+      selCarYears: function(carYear) {
+        this.carTypeGroupBySerieseMissionsYearType = this.carTypeGroupBySerieseMissionsYear[carYear];
+      },
+      selCarType: function(carTypeItemObj) {
+        this.carTypeItemAllData = carTypeItemObj;
+        console.log(this.carTypeItemAllData);
+      },
+      saveCarType: function() {
+        if (this.carTypeItemAllData && this.carTypeItemAllData != -1) {
+          layer.close(this.indexWindow);
         } else {
-          alert("no 200 code");
+          layer.msg('请选择保养车型！', {
+            icon: 2
+          });
         }
-      }).catch(function(err) {
-        alert(err);
-      })
+      },
+      cancelCarType: function() {
+        layer.close(this.indexWindow);
+      },
+      //选择车型部分结束
     }
   })
   </script>
