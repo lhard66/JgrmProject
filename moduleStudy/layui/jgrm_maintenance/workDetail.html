@@ -19,6 +19,12 @@
   cursor: pointer;
 }
 
+.cartype-content>label {
+  font-weight: normal;
+  margin-right: 30px;
+  cursor: pointer;
+}
+
 
 /*选择车型部分开始*/
 
@@ -45,8 +51,36 @@
 
 /*选择车型部分结束*/
 
-.car-oil .form-group {
-  margin: 15px 0 0 0;
+.layui-layer-content .table-oil {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.table-oil label span {
+  cursor: pointer;
+}
+
+.layui-layer-content .car-oil {
+  margin: 15px 20px;
+}
+
+.pager-content ul.pager {
+  margin: 0;
+}
+
+.pager-content .pager li {
+  display: inline-block;
+  float: right;
+  margin-right: 6px;
+}
+
+.pager-content .tips {
+  float: left;
+  line-height: 30px;
+}
+
+.pager-content .nav-pager {
+  float: right;
 }
 </style>
 
@@ -144,38 +178,54 @@
     </div>
     <!-- 添加机油类型部分 -->
     <div id="car_oil" class="car-oil">
-      <form class="form-horizontal" v-if="oilData.brand!=undefined">
+      <form class="form-inline">
         <div class="form-group">
-          <label class="col-sm-3 control-label">机油品牌:</label>
-          <div class="col-sm-9">
-            <select class="form-control" @change="selOilBrand">
-              <option selected :value="-1">请选择机油品牌</option>
-              <option v-for="item in oilData.brand" :value="item.id">{{item.title}}</option>
-            </select>
-          </div>
+          <select class="form-control" v-model="oilItemId">
+            <!-- <option :value="item.id" v-if="item.id==1" selected>{{item.title}}</option> -->
+            <!-- <option :value="item.id" v-else>{{item.title}}</option> -->
+            <option v-for="item in oilBrandName" :value="item.id">{{item.title}}</option>
+          </select>
         </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label">机油型号:</label>
-          <div class="col-sm-9">
-            <select class="form-control">
-              <option selected :value="-1">请选择机油型号</option>
-              <option v-for="item in oilData.type" :value="item.id">{{item.title}}</option>
-            </select>
-          </div>
+          <input type="text" class="form-control" placeholder="请输入机油型号">
         </div>
         <div class="form-group">
-          <div class="col-sm-offset-3 col-sm-9">
-            <span>找不到需要的型号？</span><a href="javascript:void(0);" @click="faceback">点这里留言反馈</a>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-sm-offset-3 col-sm-9">
-            <a href="javascript:void(0);" @click="addConfirm" class="btn btn-default" v-if="oilStatus==2">添加</a>
-            <a href="javascript:void(0);" @click="editConfirm" class="btn btn-default" v-if="oilStatus==1">修改</a>
-            <a href="javascript:void(0);" @click="addCancel" class="btn btn-default">取消</a>
-          </div>
+          <button type="submit" class="btn btn-default">搜索</button>
         </div>
       </form>
+      <table class="table table-bordered table-oil">
+        <thead>
+          <tr>
+            <th>机油品牌</th>
+            <th>机油型号</th>
+            <th>包装规格</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in oilListData">
+            <td>{{item.brand}}</td>
+            <td>{{item.model}}</td>
+            <td>{{item.specifications}}</td>
+            <td>
+              <label>
+                <input type="checkbox" :value="item"><span>选择</span>
+              </label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pager-content">
+        <div class="tips">
+          <span>找不到需要的型号？</span><a href="javascript:void(0);" @click="faceback">点这里留言反馈</a>
+        </div>
+        <nav class="nav-pager">
+          <ul class="pager">
+            <li><a href="#">上页</a></li>
+            <li><a href="#">下页</a></li>
+          </ul>
+        </nav>
+      </div>
     </div>
   </div>
   <script src="/car-business/static/plugins/vue/vue.js"></script>
@@ -190,18 +240,12 @@
   var vm = new Vue({
     el: '#app',
     data: {
-      maintainType: null,
-      workData: {}, //页面列表数据
-      workRow: {
-        brand: -1,
-        type: -1,
-      }, //页面某行数据
-      oilData: {
-        brand: null,
-        type: null,
-      }, //弹窗基础数据
-      indexWindow: -1, //弹窗id
-      oilStatus: 0, //弹窗是添加按钮还是修改按钮
+      workData: null, //页面加载时的数据
+      maintainType: null, //大中小保养类型            
+      indexWindow: -1, //弹窗id      
+      oilListData: null, //机油列表数据
+      oilItemId: 1, //机油列表中某一项数据ID
+      oilBrandName: null, //机油品牌列表
       seriesBrandData: null, //适用车型品牌数据，原始
       seriesOthersData: null, //适用车型其它数据，原始
       seriesOthersGroupData: null, //适用车型分组后
@@ -210,8 +254,7 @@
       seriesItemAllData: {
         brandId: -1,
         seriesId: -1,
-      }, //选中具体车系的所有数据
-      test: null,
+      }, //选中具体车系的所有数据      
     },
     mounted: function() {
       var _this = this;
@@ -228,25 +271,27 @@
       }).catch(function(err) {
         alert(err);
       });
-      //加载推荐机油弹出框，机油品牌数据      
-      $.getJSON('/car-business/car/maintance/parts/brand/list', function(res) {
-        _this.oilData.brand = res.data;
-      });
     },
     methods: {
-      showOilLayer: function() {
-        var _workRow = {};
-        var _oilDataRow = this.oilData;
-        _workRow.id = Date.now() + Math.round(Math.random() * 10000);
-        _workRow.price = _oilDataRow.price;
-        _workRow.brand = _oilDataRow.brand[0].name;
-        _workRow.type = _oilDataRow.type[0].name;
-        _workRow.size = _oilDataRow.size[0].name;
-        this.workRow = _workRow;
-      },
       addItem: function() {
-        // this.showOilLayer();
-        this.oilStatus = oilStatus.add;
+        var _this = this;
+        $.getJSON('/car-business/car/maintance/parts/list', {
+            brandId: 1,
+            pageNumber: 1,
+            pageSize: 8,
+          },
+          function(res) {
+            _this.oilListData = res.data;
+          }).error(function() {
+          layer.msg('获取机油列表失败！', {
+            icon: 2
+          })
+        });
+        $.getJSON('/car-business/car/maintance/parts/brand/list', function(res) {
+          _this.oilBrandName = res.data;
+        }).error(function() {
+          layer.msg('获取机油品牌列表失败!');
+        })
         this.indexWindow = layer.open({
           type: 1,
           title: '添加推荐机油',
@@ -372,13 +417,7 @@
       cancelSeries: function() {
         layer.close(this.indexWindow);
       },
-      //选择车型部分结束
-      selOilBrand: function(id) {
-        var _this = this;
-        $.getJSON('/car-business/car/maintance/parts/model/list?brandId=1', function(res) {
-          _this.oilData.type = res.data;
-        })
-      }
+      //选择车型部分结束      
     }
   })
   </script>
