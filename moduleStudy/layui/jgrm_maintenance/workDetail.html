@@ -162,7 +162,7 @@
               <option v-for="item in oilData.type" :value="item.id">{{item.title}}</option>
             </select>
           </div>
-        </div>        
+        </div>
         <div class="form-group">
           <div class="col-sm-offset-3 col-sm-9">
             <span>找不到需要的型号？</span><a href="javascript:void(0);" @click="faceback">点这里留言反馈</a>
@@ -318,6 +318,10 @@
         var _this = this;
         $.getJSON('/car-business/car/maintance/own/brand/list', function(res) {
           _this.seriesBrandData = res.data;
+        }).error(function(res) {
+          layer.msg('汽车品牌列表获取失败！', {
+            icon: 2
+          });
         });
         this.indexWindow = layer.open({
           type: 1,
@@ -338,19 +342,11 @@
               return item.manufacturer;
             });
           _this.seriesOthersTypeName = Object.keys(_this.seriesOthersGroupData);
+        }).error(function() {
+          layer.msg('车系列表获取失败！', {
+            icon: 2
+          });
         })
-
-        // fetch('./data/workSeriesOthers.json').then(function(res) {
-        //   return res.json();
-        // }).then(function(dataJson) {
-        //   _this.seriesOthersData = dataJson.data.rows;
-        //   _this.seriesOthersGroupData = _.groupBy(_this.seriesOthersData, function(n) {
-        //     return n.seriesType;
-        //   });
-        //   //2.解析数据显示第三行。
-        //   _this.seriesOthersType = Object.keys(_this.seriesOthersGroupData);
-        // });
-
       },
       selType: function(name) {
         //将第三级设置为空

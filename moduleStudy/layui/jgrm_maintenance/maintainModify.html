@@ -65,7 +65,7 @@
         <div class="form-group">
           <label>保养类型：</label>
           <select name="maintainType" class="form-control">
-            <option v-for="item in maintainType" :value="item.id">{{item.name}}</option>            
+            <option v-for="item in maintainType" :value="item.id">{{item.name}}</option>
           </select>
         </div>
         <div class="form-group">
@@ -175,7 +175,10 @@
       $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {
         _this.maintainType = res.data;
       }).error(function() {
-        layer.msg('搜索保养类型选择列表加载失败！');
+
+        layer.msg('搜索保养类型选择列表加载失败！', {
+          icon: 2
+        });
       });
     },
     methods: {
@@ -185,6 +188,10 @@
         $.getJSON('/car-business/car/maintance/own/brand/list', function(res) {
           console.log(res.data);
           _this.carTypeBrandData = res.data;
+        }).error(function() {
+          layer.msg('汽车品牌列表获取失败！', {
+            icon: 2
+          });
         });
 
         this.indexWindow = layer.open({
@@ -203,6 +210,10 @@
           _this.carTypeOthersData = res.data;
           _this.carTypeGroupBySeries = _.groupBy(_this.carTypeOthersData, function(item) {
             return item.manufacturer;
+          }).error(function() {
+            layer.msg('车系列表获取失败！', {
+              icon: 2
+            });
           });
           _this.carTypeGroupBySeriesNames = Object.keys(_this.carTypeGroupBySeries);
         })
