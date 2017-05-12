@@ -49,6 +49,10 @@
   width: 100px;
 }
 
+.car-oil .btn {
+  margin-top: 0;
+}
+
 
 /*选择车型部分结束*/
 
@@ -64,9 +68,11 @@
 .layui-layer-content .car-oil {
   margin: 15px 20px;
 }
-.pager-content{
+
+.pager-content {
   overflow: hidden;
 }
+
 .pager-content ul.pager {
   margin: 0;
 }
@@ -85,11 +91,20 @@
 .pager-content .nav-pager {
   float: right;
 }
+
+.empty {
+  text-align: center;
+  font-size: 20px;
+}
+
+.input-money {
+  width: 200px;
+}
 </style>
 
 <body>
   <div id="app" class="content">
-    <div class="main-content" v-if="workData!=null">
+    <div class="main-content">
       <form>
         <div class="form-group">
           <label>套餐编号：</label>
@@ -115,30 +130,31 @@
               <tr>
                 <th>机油品牌</th>
                 <th>机油型号</th>
-                <th>配图</th>
                 <th>包装规格</th>
-                <th>价格</th>
+                <th style="width: 230px;">价格</th>
                 <th>操作</th>
               </tr>
             </thead>
-            <tbody>
-              <tr v-for="item in workData.rows">
+            <tbody v-if="workData.length>0">
+              <tr v-for="item in workData">
                 <td>{{item.brand}}</td>
-                <td>{{item.type}}</td>
-                <td>图片</td>
-                <td>{{item.size}}</td>
-                <td>{{item.price}}</td>
+                <td>{{item.model}}</td>
+                <td>{{item.specifications}}</td>
                 <td>
-                  <a href="javascript:void(0);" @click="editRow(item.id)">编辑</a> | <a href="javascript:void(0);" @click="delRow(item.id)">删除</a>
+                  <div class="input-group input-money">
+                    <div class="input-group-addon">¥</div>
+                    <input type="text" class="form-control" :value="item.price" placeholder="机油价格">
+                    <div class="input-group-addon">.00</div>
+                  </div>
                 </td>
-              </tr>
-              <tr>
-                <td colspan="6">
-                  <a class="btn-add" href="#" @click="addItem">+ 添加项...</a>
+                <td>
+                  <a href="javascript:void(0);" @click="delRow(item.id)">删除</a>
                 </td>
               </tr>
             </tbody>
           </table>
+          <div class="empty" v-if="workData.length<=0"><span>请添加机油类型！</span></div>
+          <div><a class="btn-add" href="#" @click="addItem">+ 添加项...</a></div>
         </div>
         <button type="submit" class="btn btn-default">提交</button>
       </form>
@@ -217,6 +233,9 @@
             </tr>
           </tbody>
         </table>
+        <div class="empty" v-if="oilListData.length<1">
+          <span>暂无数据！</span>
+        </div>
         <div class="pager-content">
           <div class="tips">
             <span>找不到需要的型号？</span><a href="javascript:void(0);" @click="faceback">点这里留言反馈</a>
@@ -247,7 +266,7 @@
   var vm = new Vue({
     el: '#app',
     data: {
-      workData: null, //页面加载时的数据
+      workData: [], //页面加载时的数据
       maintainType: null, //大中小保养类型            
       indexWindow: -1, //弹窗id      
       oilListData: null, //机油列表数据
@@ -273,13 +292,13 @@
         _this.maintainType = res.data;
       });
       //拿到列表数据
-      fetch('./data/workData.json').then(function(res) {
-        return res.json();
-      }).then(function(dataJson) {
-        _this.workData = dataJson.data;
-      }).catch(function(err) {
-        alert(err);
-      });
+      // fetch('./data/workData.json').then(function(res) {
+      //   return res.json();
+      // }).then(function(dataJson) {
+      //   _this.workData = dataJson.data;
+      // }).catch(function(err) {
+      //   alert(err);
+      // });
     },
     methods: {
       //机油列表弹窗部分开始
@@ -326,8 +345,8 @@
         this.getOilList();
       },
       addConfirm: function() {
-        console.log(this.oilSelItem);
-        // this.workData.push()
+        this.workData = this.oilSelItem;
+        layer.close(this.indexWindow);
       },
       addCancel: function() {
         layer.close(this.indexWindow);
@@ -340,48 +359,10 @@
           content: './faceback.html'
         });
       },
+      delRow: function(rowId) {
+        console.log(rowId);
+      },
       //机油列表弹窗部分结束
-      delRow: function(num) {
-        console.log(num);
-        var newWorkData = [];
-        console.log(this.workData.rows);
-        this.workData.rows.forEach(function(item) {
-          if (item.id != num) {
-            newWorkData.push(item);
-          }
-        });
-        console.log(newWorkData);
-        this.workData.rows = newWorkData;
-      },
-      editRow: function(num) {
-        this.oilStatus = oilStatus.edit;
-        this.workData.rows.forEach(function(item) {
-          if (item.id == num) {
-            var workRowTemp = JSON.stringify(item);
-            console.log(workRowTemp);
-            var newWorkRow = JSON.parse(workRowTemp);
-            this.workRow = newWorkRow;
-            return;
-          }
-        }, this);
-        this.indexWindow = layer.open({
-          type: 1,
-          title: '修改推荐机油',
-          area: ['500px', '400px'],
-          content: $('#car_oil')
-        });
-      },
-      editConfirm: function() {
-        var _this = this;
-        var workRowTemp = JSON.stringify(this.workRow);
-        var newWorkRow = JSON.parse(workRowTemp);
-        for (var i = 0; i < _this.workData.rows.length; i++) {
-          if (_this.workData.rows[i].id == newWorkRow.id) {
-            _this.$set(_this.workData.rows, i, newWorkRow);
-          }
-        }
-        layer.close(this.indexWindow);
-      },
       //选择车型部分
       showCarSeries: function() {
         var _this = this;
@@ -447,6 +428,11 @@
       oilItemId: function(value) {
         this.oilPageNum = 1;
         this.getOilList(value);
+      }
+    },
+    computed:{
+      produceId:function(){
+        return Math.round(Math.random()*100000)+Date.now();
       }
     }
   })
