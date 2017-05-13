@@ -80,6 +80,7 @@
                   <div class="col-xs-4">
                     <label class="">套餐类型：</label>
                     <select name="schemeCategoryId" id="work_type">
+                      <option value="">全部</option>
                     </select>
                   </div>
                   <div class="col-xs-4">
@@ -181,7 +182,29 @@
           field: 'checkStatus',
           align: 'center',
           formatter: function(value, row, index) {
-
+            var label = '';
+            if (value == OrderStatus.unpay) {
+              label = '未付款';
+            } else if (value == OrderStatus.payed) {
+              label = '未消费';
+            } else if (value == OrderStatus.served) {
+              label = '未评价';
+            } else if (value == OrderStatus.commented) {
+              label = '已评价';
+            } else if (value == OrderStatus.refunding) {
+              label = '退款中';
+            } else if (value == OrderStatus.refunded) {
+              label = '已退款';
+            } else if (value == OrderStatus.expired) {
+              label = '已过期';
+            } else if (value == OrderStatus.unpay_expired) {
+              label = '已失效';
+            } else if (value == OrderStatus.applyrefund) {
+              label = '待退款';
+            } else {
+              label = '订单异常（' + row.orderStatus + '）';
+            }
+            return label;
           }
         }, {
           title: '操作',

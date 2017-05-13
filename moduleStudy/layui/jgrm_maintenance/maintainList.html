@@ -101,9 +101,7 @@
         field: 'appointmentTime',
         align: 'center',
         valign: 'middle',
-        formatter: function(value, row, index) {
-          // return new Date(row.orderTime).Format("yyyy-MM-dd hh:mm:ss");
-          console.log(value);
+        formatter: function(value, row, index) {          
           if (value) {
             var strDayTime = '下午';
             var strYear = value.slice(0, 4);

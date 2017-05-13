@@ -117,6 +117,7 @@
     </div>
   </div>
   <script src="/car-business/static/plugins/vue/vue.js"></script>
+  <script src="/car-business/static/plugins/hp/js/jquery.min.js?v=2.1.4"></script>
   <script>  
   var vm = new Vue({
     el: '#page',
@@ -127,7 +128,14 @@
       loading: false,
     },
     mounted: function() {
-      var _this = this;      
+      var _this = this;            
+      $.get('/car-business/car/maintance/car/order/info?oid=U200535',function(res){
+        console.log(res);
+      }).error(function(err){
+        alert('请求数据失败！');
+      })
+
+
       fetch('./data/maintainDetail.json').then(function(res) {
         return res.json();
       }).then(function(jsonData) {
