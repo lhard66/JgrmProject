@@ -149,6 +149,7 @@
   <script src="/car-business/static/plugins/hp/js/jquery.min.js?v=2.1.4"></script>
   <script src="./js/lodash.min.js"></script>
   <script src="/car-business/static/plugins/hp/js/plugins/layer/layer.js"></script>
+  <script src="./js/common.js"></script>
   <script>
   vm = new Vue({
     el: '#maintain_page',
@@ -175,23 +176,17 @@
       $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {
         _this.maintainType = res.data;
       }).error(function() {
-
-        layer.msg('搜索保养类型选择列表加载失败！', {
-          icon: 2
-        });
+        errorShow('搜索保养类型选择列表加载失败！');
       });
     },
     methods: {
       //选择车型部分开始
       showCarType: function() {
         var _this = this;
-        $.getJSON('/car-business/car/maintance/own/brand/list', function(res) {
-          console.log(res.data);
+        $.getJSON('/car-business/car/maintance/own/brand/list', function(res) {          
           _this.carTypeBrandData = res.data;
         }).error(function() {
-          layer.msg('汽车品牌列表获取失败！', {
-            icon: 2
-          });
+          errorShow('汽车品牌列表获取失败！');
         });
 
         this.indexWindow = layer.open({
@@ -210,13 +205,11 @@
           _this.carTypeOthersData = res.data;
           _this.carTypeGroupBySeries = _.groupBy(_this.carTypeOthersData, function(item) {
             return item.manufacturer;
-          }).error(function() {
-            layer.msg('车系列表获取失败！', {
-              icon: 2
-            });
           });
           _this.carTypeGroupBySeriesNames = Object.keys(_this.carTypeGroupBySeries);
-        })
+        }).error(function() {
+          errorShow('车系列表获取失败！');
+        });
       },
       selCarSeries: function(seriesName) {
         this.carTypeGroupBySerieseMissionsYearNames = [];
@@ -244,9 +237,7 @@
         if (this.carTypeItemAllData && this.carTypeItemAllData != -1) {
           layer.close(this.indexWindow);
         } else {
-          layer.msg('请选择保养车型！', {
-            icon: 2
-          });
+          errorShow('请选择保养车型！');
         }
       },
       cancelCarType: function() {

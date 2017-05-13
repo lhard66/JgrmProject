@@ -259,6 +259,7 @@
   <script src="/car-business/static/plugins/hp/js/jquery.min.js?v=2.1.4"></script>
   <script src="./js/lodash.min.js"></script>
   <script src="/car-business/static/plugins/hp/js/plugins/layer/layer.js"></script>
+  <script src="./js/common.js"></script>
   <script>
   var oilStatus = {
     edit: 1,
@@ -289,8 +290,7 @@
     mounted: function() {
       var _this = this;
       //获取保养类型列表
-      $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {
-        console.log(res);
+      $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {        
         _this.maintainType = res.data;
       });
       //拿到列表数据      
@@ -299,7 +299,7 @@
       //机油列表弹窗部分开始
       getOilList: function() {
         var _this = this;
-        $.getJSON('/car-business/car/maintance/parts/list', {
+        $.getJSON('/car-business/car/maintance/parts/list', {          
             brandId: _this.oilItemId,
             pageNumber: _this.oilPageNum,
             pageSize: 1,
@@ -307,9 +307,7 @@
           function(res) {
             _this.oilListData = res.data.result;
           }).error(function() {
-          layer.msg('获取机油列表失败！', {
-            icon: 2
-          })
+          errorShow('获取机油列表失败！');
         });
       },
       addItem: function() {
@@ -318,7 +316,7 @@
           _this.oilBrandName = res.data;
           _this.oilItemId = 1; //设置默认选中为id为1的项目
         }).error(function() {
-          layer.msg('获取机油品牌列表失败!');
+          errorShow('获取机油品牌列表失败!');
         })
         this.indexWindow = layer.open({
           type: 1,
@@ -376,9 +374,7 @@
         $.getJSON('/car-business/car/maintance/own/brand/list', function(res) {
           _this.seriesBrandData = res.data;
         }).error(function(res) {
-          layer.msg('汽车品牌列表获取失败！', {
-            icon: 2
-          });
+          errorShow('汽车品牌列表获取失败！');
         });
         this.indexWindow = layer.open({
           type: 1,
@@ -419,9 +415,7 @@
           //隐藏对话框
           layer.close(this.indexWindow);
         } else {
-          layer.msg('请选择保养车型！', {
-            icon: 2
-          });
+          errorShow('请选择保养车型！');
         }
       },
       cancelSeries: function() {
@@ -484,12 +478,7 @@
         this.getOilList(value);
       }
     }
-  })
-  var errorShow = function(msg) {
-    layer.msg(msg, {
-      icon: 2
-    });
-  }
+  })  
   </script>
 </body>
 
