@@ -105,14 +105,14 @@
 <body>
   <div id="app" class="content">
     <div class="main-content">
-      <form>
+      <form id="maintainForm">
         <div class="form-group">
           <label>套餐编号：</label>
           <input type="text" class="form-control" readonly>
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">套餐类型：</label>
-          <select class="form-control">
+          <select class="form-control" name="schemeCategoryId" v-model="categoryId">
             <option v-for="item in maintainType" :value="item.id">{{item.name}}</option>
           </select>
         </div>
@@ -143,7 +143,8 @@
                 <td>
                   <div class="input-group input-money">
                     <div class="input-group-addon">¥</div>
-                    <input type="text" class="form-control" :value="item.price" placeholder="机油价格">
+                    <input type="text" class="form-control" name="price" :value="item.price" placeholder="机油价格">
+                    <input type="hidden" name="partsId" :value="item.id">
                     <div class="input-group-addon">.00</div>
                   </div>
                 </td>
@@ -156,7 +157,7 @@
           <div class="empty" v-if="workData.length<=0"><span>请添加机油类型！</span></div>
           <div><a class="btn-add" href="#" @click="addItem">+ 添加项...</a></div>
         </div>
-        <button type="submit" class="btn btn-default">提交</button>
+        <a href="javascript:void(0);" class="btn btn-default" @click="saveMaintain">提交</a>
       </form>
     </div>
     <!-- 适合用车系 -->
@@ -268,7 +269,8 @@
     data: {
       workData: [], //页面加载时的数据
       maintainType: null, //大中小保养类型            
-      indexWindow: -1, //弹窗id      
+      indexWindow: -1, //弹窗id
+      categoryId: 0, //套餐类型      
       oilListData: null, //机油列表数据
       oilSelItem: [], //机油列表中选中的对象
       oilItemId: -1, //机油列表中某一项数据ID
@@ -291,14 +293,7 @@
         console.log(res);
         _this.maintainType = res.data;
       });
-      //拿到列表数据
-      // fetch('./data/workData.json').then(function(res) {
-      //   return res.json();
-      // }).then(function(dataJson) {
-      //   _this.workData = dataJson.data;
-      // }).catch(function(err) {
-      //   alert(err);
-      // });
+      //拿到列表数据      
     },
     methods: {
       //机油列表弹窗部分开始
@@ -310,7 +305,7 @@
             pageSize: 1,
           },
           function(res) {
-            _this.oilListData = res.data;
+            _this.oilListData = res.data.result;
           }).error(function() {
           layer.msg('获取机油列表失败！', {
             icon: 2
@@ -345,7 +340,10 @@
         this.getOilList();
       },
       addConfirm: function() {
-        this.workData = this.oilSelItem;
+        this.oilSelItem.forEach(function(item) {
+          this.workData.push(item);
+        }, this);
+        this.oilSelItem = [];
         layer.close(this.indexWindow);
       },
       addCancel: function() {
@@ -355,12 +353,21 @@
         layer.open({
           type: 2,
           title: '反馈留言',
-          area: ['470px', '320px'], //宽高
+          area: ['470px', '320px'],
           content: './faceback.html'
         });
       },
       delRow: function(rowId) {
-        console.log(rowId);
+        var newWorkData = [];
+        this.workData.forEach(function(item) {
+          if (item.id != rowId) {
+            newWorkData.push(item);
+          }
+        });
+        this.workData = newWorkData;
+      },
+      produceId: function() {
+        return Math.round(Math.random() * 100000) + Date.now();
       },
       //机油列表弹窗部分结束
       //选择车型部分
@@ -393,9 +400,7 @@
             });
           _this.seriesOthersTypeName = Object.keys(_this.seriesOthersGroupData);
         }).error(function() {
-          layer.msg('车系列表获取失败！', {
-            icon: 2
-          });
+          errorShow('车系列表获取失败！');
         })
       },
       selType: function(name) {
@@ -423,19 +428,68 @@
         layer.close(this.indexWindow);
       },
       //选择车型部分结束      
+      //保存保养方案
+      saveMaintain: function() {
+        if (this.seriesItemAllData.seriesId == -1 || this.seriesItemAllData.brandId == -1) {
+          errorShow('请选择车系！');
+          return;
+        }
+        var maintainForm = {
+          schemeCategoryId: this.categoryId,
+          mspList: [],
+          mscList: [{
+            carSeriesId: this.seriesItemAllData.seriesId,
+            carBrandId: this.seriesItemAllData.brandId
+          }]
+        }
+        var regexPrice = /^(0|[1-9][0-9]{0,9})(\.[0-9]{1,2})?$/;
+        var isOil = true;
+        maintainForm.mspList = _.map(this.workData, function(item) {
+          if (!regexPrice.test(item.price)) {
+            isOil = false;
+          }
+          return {
+            partsId: item.id,
+            price: item.price
+          };
+        });
+        if (maintainForm.mspList.length < 1) {
+          errorShow('请添加推荐机油！');
+          return;
+        }
+        if (!isOil) {
+          errorShow('价格输入有误！');
+          return;
+        };
+        var strMaintainForm = JSON.stringify(maintainForm);
+        $.ajax({
+          method: "POST",
+          url: "/car-business/car/maintance/save/scheme",
+          data: strMaintainForm,
+          contentType: "application/json"
+        }).done(function(res) {
+          if (res.code == 200) {
+            //window.location = './workList.html';
+            console.log('success!!!');
+          } else {
+            errorShow('提交数据失败，请刷新重试！');
+          }
+        });
+
+      }
     },
     watch: {
       oilItemId: function(value) {
         this.oilPageNum = 1;
         this.getOilList(value);
       }
-    },
-    computed:{
-      produceId:function(){
-        return Math.round(Math.random()*100000)+Date.now();
-      }
     }
   })
+  var errorShow = function(msg) {
+    layer.msg(msg, {
+      icon: 2
+    });
+  }
   </script>
 </body>
 
