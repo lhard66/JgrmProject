@@ -79,13 +79,13 @@
                 <div class="row">
                   <div class="col-xs-4">
                     <label class="">套餐类型：</label>
-                    <select name="type" id="work_type">
+                    <select name="schemeCategoryId" id="work_type">
                     </select>
                   </div>
                   <div class="col-xs-4">
                     <label class="">审核状态：</label>
-                    <select name="status">
-                      <option value="1">全部</option>
+                    <select name="checkStatus">
+                      <option value="">全部</option>
                       <option value="2">未通过</option>
                       <option value="3">已通过</option>
                       <option value="4">审核中</option>
@@ -120,10 +120,10 @@
       unpay_expired: 7,
       applyrefund: 8
     };
-
-    $(function() {
+    var schemeCategory = null;
+    var loadPage = function() {
       $('#dg').bootstrapTable({
-        url: "./data/workData.json",
+        url: "/car-business/car/maintance/scheme/list",
         dataType: "json",
         responseHandler: function(res) {
           return {
@@ -143,49 +143,78 @@
           valign: 'middle'
         }, {
           title: '套餐类型',
-          field: 'type',
+          field: 'schemeCategoryId',
           align: 'center',
-          valign: 'middle'
+          valign: 'middle',
+          formatter: function(value) {
+            var name = '';
+            schemeCategory.map(function(item) {
+              if (item.id == value) {
+                name = item.name;
+              }
+            });
+            return name;
+          }
         }, {
           title: '适用车系',
-          field: 'series',
+          field: 'mscList',
           align: 'center',
-          valign: 'middle'
+          valign: 'middle',
+          formatter: function(value, row, index) {
+            return value[0].carSeries;
+          }
         }, {
           title: '机油价格',
-          field: 'price',
-          align: 'center'
+          field: 'mspList',
+          align: 'center',
+          formatter: function(value, row, index) {
+            var strPrice = '¥ ';
+            value.forEach(function(item) {
+              if (item.price) {
+                strPrice += item.price + ' - ';
+              }
+            });
+            return strPrice.substr(0, strPrice.length - 2);
+          }
         }, {
           title: '状态',
-          field: 'status',
-          align: 'center'
+          field: 'checkStatus',
+          align: 'center',
+          formatter: function(value, row, index) {
+
+          }
         }, {
           title: '操作',
           field: 'id',
           align: 'center',
-          formatter: function(value, row,
-            index) {
+          formatter: function(value, row, index) {
             return '<a href="javascript:void(0)" mce_href="#" onclick="detail(\'' + row.id + '\')">编辑</a>';
           }
         }]
       });
+    }
 
-      //加载保养类型
-      $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {
-        res.data.forEach(function(item) {
-          $('#work_type').append('<option value="' + item.id + '">' + item.name + '</option>');
-        });
-      }).error(function(){
-        layer.msg('搜索保养类型选择列表加载失败！');
+    // loadPage();
+    //加载保养类型
+
+    $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {
+      schemeCategory = res.data;
+      console.log(schemeCategory);
+      //拿到机油品牌后加载页面
+      loadPage();
+      res.data.forEach(function(item) {
+        $('#work_type').append('<option value="' + item.id + '">' + item.name + '</option>');
       });
+    }).error(function() {
+      layer.msg('搜索保养类型选择列表加载失败！');
+    });
 
-      $("#searchForm").on('submit', function() {
-        $('#dg').bootstrapTable('refresh', {
-          url: "./data/workData.json",
-        });
-        return false;
+
+    $("#searchForm").on('submit', function() {
+      $('#dg').bootstrapTable('refresh', {
+        url: "/car-business/car/maintance/scheme/list?" + $("#searchForm").serialize(),
       });
-
+      return false;
     });
 
     function detail(id) {

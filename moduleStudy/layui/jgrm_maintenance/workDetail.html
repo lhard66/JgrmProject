@@ -290,7 +290,7 @@
     mounted: function() {
       var _this = this;
       //获取保养类型列表
-      $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {        
+      $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {
         _this.maintainType = res.data;
       });
       //拿到列表数据      
@@ -299,7 +299,7 @@
       //机油列表弹窗部分开始
       getOilList: function() {
         var _this = this;
-        $.getJSON('/car-business/car/maintance/parts/list', {          
+        $.getJSON('/car-business/car/maintance/parts/list', {
             brandId: _this.oilItemId,
             pageNumber: _this.oilPageNum,
             pageSize: 1,
@@ -433,7 +433,8 @@
           mspList: [],
           mscList: [{
             carSeriesId: this.seriesItemAllData.seriesId,
-            carBrandId: this.seriesItemAllData.brandId
+            carBrandId: this.seriesItemAllData.brandId,
+            carSeries: this.seriesItemAllData.series
           }]
         }
         var regexPrice = /^(0|[1-9][0-9]{0,9})(\.[0-9]{1,2})?$/;
@@ -478,7 +479,7 @@
         this.getOilList(value);
       }
     }
-  })  
+  })
   </script>
 </body>
 
