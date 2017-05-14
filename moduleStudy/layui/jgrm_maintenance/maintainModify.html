@@ -36,14 +36,10 @@
 <body>
   <div class="content" id="maintain_page" v-if="pageForm!=null">
     <div class="main-content">
-      <form>
+      <form id="maintain_form">
         <div class="form-group">
           <label>订单号码：</label>
-          <input type="text" name="oid" v-model="pageForm.oid" class="form-control" disabled>
-        </div>
-        <div class="form-group">
-          <label>订单状态：</label>
-          <input type="text" name="orderStatus" v-model="pageForm.orderStatus" class="form-control" disabled>
+          <input type="text" name="oid" v-model="pageForm.oid" class="form-control" readonly>
         </div>
         <div class="form-group">
           <label>下单用户：</label>
@@ -51,7 +47,7 @@
         </div>
         <div class="form-group has-feedback">
           <label>车辆型号：</label>
-          <input type="text" class="form-control" placeholder="点击这里选择车型" @click="showCarType" readonly>
+          <input type="text" class="form-control" v-model="carTypeItemAllData.type" placeholder="点击这里选择车型" @click="showCarType" readonly>
           <span class="glyphicon glyphicon-th-list form-control-feedback" aria-hidden="true"></span>
           <input type="hidden" name="carId" v-model="pageForm.carId">
         </div>
@@ -79,7 +75,7 @@
         </div>
         <div class="form-group">
           <label>推荐机油：</label>
-          <select name="schemePartsId" class="form-control" v-model="pageForm.schemePartsId">
+          <select name="partsId" class="form-control" v-model="pageForm.schemePartsId">
             <option value="0">机油一</option>
             <option value="1">机油二</option>
             <option value="2">机油三</option>
@@ -170,24 +166,24 @@
       carTypeGroupBySerieseMissionsYearTypeNames: [], //以车系、排量、年款和型号分组组名
       carTypeItemAllData: {
         id: -1,
+        type: '' //车型名
       }, //最终需要的车型对象
     },
     mounted: function() {
       //加载保养类型
       var _this = this;
-      $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {
-        _this.maintainType = res.data;
-      }).error(function() {
-        errorShow('搜索保养类型选择列表加载失败！');
-      });
+      var search = document.location.search;
+      if (!search) {
+        errorShow('参数有误，页面加载失败！');
+        return;
+      }
       //加载某项数据
-      $.getJSON('/car-business/car/maintance/order/list?id=U200535', function(res) {
+      $.getJSON('/car-business/car/maintance/order/list' + search, function(res) {
         if (res.data.rows.length > 0) {
           var pageData = res.data.rows[0];
           _this.pageForm = {
             oid: pageData.id,
             name: pageData.name,
-            orderStatus: pageData.orderStatus,
             carId: pageData.carModelId,
             carno: pageData.carno,
             mileage: 0,
@@ -198,8 +194,13 @@
         } else {
           errorShow('加载数据失败，请重试！');
         }
-
-      })
+      });
+      //保养类型
+      $.getJSON('/car-business/car/maintance/scheme/category/list', function(res) {
+        _this.maintainType = res.data;
+      }).error(function() {
+        errorShow('保养类型选择列表加载失败！');
+      });
     },
     methods: {
       //选择车型部分开始
@@ -266,8 +267,12 @@
         layer.close(this.indexWindow);
       },
       //选择车型部分结束
-      confirm:function(){
-        console.log('提交');
+      confirm: function() {
+        var form = $('#maintain_form').serialize();
+        console.log(form);
+        $.post('/car-business/car/maintance/order/modify', form, function(res) {
+          console.log(res);
+        });
       }
     }
   })
