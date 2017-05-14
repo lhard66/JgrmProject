@@ -52,42 +52,39 @@
     font-weight: 600;
   }
   </style>
-  <link rel="stylesheet" href="loading.css">
 </head>
 
 <body>
   <div id="page">
-    <table class="detail" v-if="loading">
+    <table class="detail" v-if="orderData!=null">
       <tr>
         <td>订单号码：</td>
-        <td>{{orderData.orderId}}</td>
+        <td>{{orderData.id}}</td>
         <td>订单状态：</td>
         <td>{{orderData.orderStatus}}</td>
       </tr>
       <tr>
         <td>下单时间：</td>
-        <td>{{orderData.buyTime}}</td>
+        <td>{{orderData.payTime | convertDate}}</td>
         <td>预约时间：</td>
-        <td>{{orderData.orderTime}}</td>
+        <td>{{orderData.appointmentTime | convertAppointmentTime}}</td>
       </tr>
       <tr>
         <td>保养方案：</td>
-        <td>{{orderData.type}}</td>
+        <td>{{orderData.schemeCategoryId}}</td>
         <td>用户评价：</td>
-        <td>{{orderData.comment}} <a href="#">查看详情</a></td>
+        <td>{{orderData.serviceLabel}} <a href="#">查看详情</a></td>
       </tr>
       <tr>
         <td>保养进度：</td>
         <td colspan="3">
-          <p>{{orderData.stage.content}}</p>
-          <p>{{orderData.stage.time}}</p>
+          无
         </td>
       </tr>
       <tr>
         <td>保养车辆：</td>
         <td colspan="3">
-          <p>{{orderData.car.num}}</p>
-          <p>{{orderData.car.content}}</p>
+          {{orderData.carno}}
         </td>
       </tr>
       <tr>
@@ -98,58 +95,59 @@
               <td>名称</td>
               <td>价格(￥)</td>
             </tr>
-            <template v-for="item in orderData.orderDetail">
-              <tr>
-                <td>{{item.name}}</td>
-                <td>{{item.money}}</td>
-              </tr>
-            </template>
+            <tr>
+              <td>工时费</td>
+              <td>{{orderData.hourPrice}}</td>
+            </tr>
+            <tr>
+              <td>优惠</td>
+              <td>{{orderData.bprice}}</td>
+            </tr>
+            <tr>
+              <td>总价</td>
+              <td>{{orderData.price}}</td>
+            </tr>
           </table>
         </td>
       </tr>
     </table>
-    <div class="spinner" v-show="false">
-      <div class="rect1"></div>
-      <div class="rect2"></div>
-      <div class="rect3"></div>
-      <div class="rect4"></div>
-      <div class="rect5"></div>
-    </div>
   </div>
   <script src="/car-business/static/plugins/vue/vue.js"></script>
   <script src="/car-business/static/plugins/hp/js/jquery.min.js?v=2.1.4"></script>
-  <script>  
+  <script>
   var vm = new Vue({
     el: '#page',
     data: {
-      msg: '',
-      code: -1,
       orderData: null,
-      loading: false,
     },
     mounted: function() {
-      var _this = this;            
-      $.get('/car-business/car/maintance/car/order/info?oid=U200535',function(res){
-        console.log(res);
-      }).error(function(err){
+      var _this = this;
+      $.get('/car-business/car/order/info?oid=U200535', function(res) {
+        _this.orderData = res.data;
+      }).error(function() {
         alert('请求数据失败！');
-      })
-
-
-      fetch('./data/maintainDetail.json').then(function(res) {
-        return res.json();
-      }).then(function(jsonData) {
-        if (jsonData.code == 200) {
-          _this.msg = jsonData.msg;
-          _this.orderData = jsonData.data;
-        } else {
-          alert('请求数据有误');
-        }        
-        _this.loading = true;
-      }).catch(function(err) {
-        alert(err);
-        _this.loading = true;
       });
+    },
+    filters: {
+      convertDate: function(value) {
+        return new Date(value).toLocaleDateString();
+      },
+      convertAppointmentTime: function(value) {
+        if (value) {
+          var strDayTime = '下午';
+          var strYear = value.slice(0, 4);
+          var strMonth = value.slice(4, 6);
+          var strDay = value.slice(6, 8);
+          var dayType = value.slice(8);
+          if (dayType == 0) {
+            strDayTime = '上午';
+          }
+          return strYear + '/' + strMonth + '/' +
+            strDay + ' ' + strDayTime;
+        } else {
+          return '暂无';
+        }
+      }
     }
   })
   </script>
