@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+	<meta charset="utf-8">
+	<title>v-html用法</title>
+	<script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+	<h3>v-html用法：</h3>
+	<div id="app">
+		<div v-html="htmlData"></div>
+		<div v-text="htmlData"></div>
+	</div>
+	<script>
+		vm=new Vue({
+			el:'#app',
+			data:{
+				htmlData:'<p>一二三四五六七</p>'
+			}
+		})
+	</script>
+</body>
+</html>
