@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>CSS3自定义Checkbox特效DEMO演示</title>
+</head>
+<style type="text/css">
+.tgl {
+  display: none
+}
+
+.tgl,
+.tgl *,
+.tgl:after,
+.tgl:before,
+.tgl+.tgl-btn,
+.tgl:after,
+.tgl:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box
+}
+
+.tgl::-moz-selection,
+.tgl:after::-moz-selection,
+.tgl:before::-moz-selection,
+.tgl+.tgl-btn::-moz-selection,
+.tgl::-moz-selection,
+.tgl:after::-moz-selection,
+.tgl:before::-moz-selection {
+  background: 0 0
+}
+
+.tgl::selection,
+.tgl:after::selection,
+.tgl:before::selection,
+.tgl+.tgl-btn::selection,
+.tgl::selection,
+.tgl:after::selection,
+.tgl:before::selection {
+  background: 0 0
+}
+
+.tgl+.tgl-btn {
+  outline: 0;
+  display: block;
+  width: 4em;
+  height: 2em;
+  position: relative;
+  cursor: pointer
+}
+
+.tgl+.tgl-btn:after,
+.tgl+.tgl-btn:before {
+  position: relative;
+  display: block;
+  content: "";
+  width: 50%;
+  height: 100%
+}
+
+.tgl+.tgl-btn:after {
+  left: 0
+}
+
+.tgl+.tgl-btn:before {
+  display: none
+}
+
+.tgl:checked+.tgl-btn:after {
+  left: 50%
+}
+
+.tgl-light+.tgl-btn {
+  background: #f0f0f0;
+  border-radius: 2em;
+  padding: 2px;
+  -webkit-transition: all .4s ease;
+  transition: all .4s ease
+}
+
+.tgl-light+.tgl-btn:after {
+  border-radius: 50%;
+  background: #fff;
+  -webkit-transition: all .2s ease;
+  transition: all .2s ease
+}
+
+.tgl-light:checked+.tgl-btn {
+  background: #9FD6AE
+}
+</style>
+
+<body>
+  <span class='tg-list-item'>
+    <input class='tgl tgl-light' id='cb1' type='checkbox'>
+    <label class='tgl-btn' for='cb1'></label>
+  </span>
+</body>
+
+</html>
