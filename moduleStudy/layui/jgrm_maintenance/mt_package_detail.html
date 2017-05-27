@@ -1,0 +1,146 @@
+<!-- <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%> -->
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <title>保养详情</title>
+  <style>
+  p {
+    margin: 0;
+  }
+  
+  td {
+    padding: 9px 15px;
+    min-height: 20px;
+    line-height: 20px;
+    border: 1px solid #e2e2e2;
+    font-size: 14px;
+  }
+  
+  .detail {
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  
+  .detail td:nth-child(odd) {
+    font-weight: 600;
+  }
+  
+  .total tr:not(:first-child)>td {
+    font-weight: normal;
+  }
+  
+  .detail td {
+    border: 1px solid #E4EAEC;
+  }
+  
+  .total {
+    width: 100%;
+  }
+  
+  .total td {
+    border: 0;
+    border-right: 1px solid #E4EAEC;
+  }
+  
+  .total td:last-child {
+    border-right: 0;
+  }
+  
+  .total-title>td {
+    border-bottom: 1px solid #E4EAEC;
+    font-weight: 600;
+  }
+  
+  .error {
+    text-align: center;
+    height: 200px;
+    line-height: 200px;
+    font-size: 18px;
+  }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <template v-if="!appStatus">
+      <table class="detail">
+        <tr>
+          <td>套餐编号：</td>
+          <td>{{detail.mScheme.id}}</td>
+          <td>适用车系：</td>
+          <td>{{detail.mScheme.mscList[0].carSeries}}</td>
+        </tr>
+        <tr>
+          <td>保养类型：</td>
+          <td colspan="3">大保养</td>
+        </tr>
+        <tr>
+          <td>推荐机油：</td>
+          <td colspan="3">
+            <table class="total">
+              <tr class="total-title">
+                <td>机油品牌</td>
+                <td>机油型号</td>
+                <td>包装规格</td>
+                <td>价格(￥)</td>
+              </tr>
+              <tr v-for="item in detail.partsList">
+                <td width="200px;">{{item.title}}</td>
+                <td>xw-80</td>
+                <td>4L</td>
+                <td>{{item.price}}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </template>
+    <template v-if="appStatus">
+      <div class="error">{{msg}}</div>
+    </template>
+  </div>
+  <script src="/car-business/static/js/vue.js"></script>
+  <script src="/car-business/static/plugins/hp/js/jquery.min.js?v=2.1.4"></script>
+  <script>
+  var API = {
+    getDetail: function() {
+      var dtd = $.Deferred();
+      var paramId = location.search.replace(/^\?/, '');
+      if (!paramId) {
+        return dtd.reject('参数错误！');
+      }
+      $.getJSON('/car-business/car/maintance/scheme/info', paramId, function(res) {
+        if (res.code == 200) {
+          dtd.resolve(res.data);
+        } else {
+          dtd.reject(res.msg);
+        }
+      }).error(function() {
+        dtd.reject('网络异常，请关闭重试！');
+      })
+      return dtd;
+    }
+  }
+  vm = new Vue({
+    el: '#app',
+    data: {
+      appStatus: true,
+      msg: '加载中...',
+      detail: null,
+    },
+    mounted: function() {
+      var that = this;
+      API.getDetail().then(function(data) {
+        that.detail = data;
+        that.appStatus = false;
+      }).fail(function(err) {
+        that.msg = err;
+      });
+    }
+  })
+  </script>
+</body>
+
+</html>
