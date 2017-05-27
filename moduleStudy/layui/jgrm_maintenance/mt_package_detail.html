@@ -68,13 +68,13 @@
       <table class="detail">
         <tr>
           <td>套餐编号：</td>
-          <td>{{detail.mScheme.id}}</td>
+          <td>{{detail.id}}</td>
           <td>适用车系：</td>
-          <td>{{detail.mScheme.mscList[0].carSeries}}</td>
+          <td>{{detail.carSeries}}</td>
         </tr>
         <tr>
           <td>保养类型：</td>
-          <td colspan="3">大保养</td>
+          <td colspan="3">{{detail.category}}</td>
         </tr>
         <tr>
           <td>推荐机油：</td>
@@ -86,10 +86,10 @@
                 <td>包装规格</td>
                 <td>价格(￥)</td>
               </tr>
-              <tr v-for="item in detail.partsList">
-                <td width="200px;">{{item.title}}</td>
-                <td>xw-80</td>
-                <td>4L</td>
+              <tr v-for="item in detail.oilList">
+                <td>{{item.brand}}</td>
+                <td>{{item.model}}</td>
+                <td>{{item.specifications}}</td>
                 <td>{{item.price}}</td>
               </tr>
             </table>
@@ -106,12 +106,23 @@
   <script>
   var API = {
     getDetail: function() {
-      var dtd = $.Deferred();
       var paramId = location.search.replace(/^\?/, '');
-      if (!paramId) {
-        return dtd.reject('参数错误！');
+      if (paramId) {
+        var promiseCategory = this.promiseAjax('/car-business/car/maintance/scheme/category/list');
+        var promiseDetail = this.promiseAjax('/car-business/car/maintance/scheme/info', paramId);
+        var dataList = [
+          promiseCategory,
+          promiseDetail
+        ];
+        return $.when.apply($, dataList);
+      } else {
+        return $.Deferred().reject('参数错误！');
+        // return '-1';
       }
-      $.getJSON('/car-business/car/maintance/scheme/info', paramId, function(res) {
+    },
+    promiseAjax: function(api, data) {
+      var dtd = $.Deferred();
+      $.getJSON(api, data, function(res) {
         if (res.code == 200) {
           dtd.resolve(res.data);
         } else {
@@ -128,12 +139,28 @@
     data: {
       appStatus: true,
       msg: '加载中...',
-      detail: null,
+      detail: {
+        id: null,
+        category: '暂无',
+        carSeries: null,
+        oilList: null,
+      },
     },
     mounted: function() {
       var that = this;
-      API.getDetail().then(function(data) {
-        that.detail = data;
+      API.getDetail().then(function(categoryData, DetailData) {
+        console.log(categoryData);
+        console.log(DetailData);
+        console.log();
+        that.detail.id = DetailData.mScheme.id;
+        that.detail.carSeries = DetailData.mScheme.mscList[0].carSeries;
+        that.detail.oilList = DetailData.partsList;
+
+        categoryData.forEach(function(item) {
+          if (DetailData.mScheme.schemeCategoryId == item.id) {
+            that.detail.category = item.name;
+          }
+        })
         that.appStatus = false;
       }).fail(function(err) {
         that.msg = err;
