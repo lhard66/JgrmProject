@@ -17,8 +17,13 @@
   .btn-default {
     margin-right: 10px;
   }
-  .glyphicon-warning{
-  	color: red;
+  
+  .glyphicon-warning {
+    color: red;
+  }
+  
+  .btn-width {
+    width: 100px;
   }
   </style>
 </head>
@@ -34,13 +39,14 @@
           <div class="form-group">
             <label class="col-sm-3 control-label"><span class="glyphicon glyphicon-asterisk glyphicon-warning" aria-hidden="true"></span>用户名：</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" v-model="form.name" @blur="checkName" placeholder="">
+              <input type="text" name="loginName" class="form-control" v-model="form.name" @blur="checkName" placeholder="">
+              <span>长度为4-16位字符，支持数字、字母、横杠(-)、下划线(_)。</span>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-3 control-label"><span class="glyphicon glyphicon-asterisk glyphicon-warning" aria-hidden="true"></span>密 码：</label>
             <div class="col-sm-9">
-              <input type="password" class="form-control" v-model="form.pwd" placeholder="">
+              <input type="password" class="form-control" name="plainPassword" v-model="form.pwd" placeholder="">
             </div>
           </div>
           <div class="form-group">
@@ -60,33 +66,34 @@
             <label class="col-sm-3 control-label">性别：</label>
             <div class="col-sm-9">
               <label class="radio-inline">
-                <input type="radio" name="sex" id="inlineRadio1" v-model="form.sex">男
+                <input type="radio" name="gender" value="1" v-model="form.sex">男
               </label>
               <label class="radio-inline">
-                <input type="radio" name="sex" id="inlineRadio2" v-model="form.sex">女
+                <input type="radio" name="gender" value="2" v-model="form.sex">女
               </label>
               <label class="radio-inline">
-                <input type="radio" name="sex" id="inlineRadio3" v-model="form.sex">保密
+                <input type="radio" name="gender" value="3" v-model="form.sex">保密
               </label>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-3 control-label">昵称：</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" v-model="form.nick" placeholder="">
+              <input type="text" class="form-control" name="name" v-model="form.nick" placeholder="">
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-3 control-label">电话：</label>
+            <label class="col-sm-3 control-label">手机：</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" v-model="form.tel" placeholder="">
+              <input type="text" class="form-control" name="phone" v-model="form.tel" placeholder="">
             </div>
           </div>
         </div>
       </div>
       <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9">
-          <a href="javascript:void(0);" class="btn btn-default" @click="confirm">确定</a>
+          <a href="javascript:void(0);" class="btn btn-default btn-width" @click="confirm">确定</a>
+          <a href="javascript:void(0);" class="btn btn-default btn-width" @click="cancel">取消</a>
           <span class="text-danger">{{warning}}</span>
         </div>
       </div>
@@ -99,28 +106,22 @@
     });
   }
   var exist = {
-    wrong: 0,
     right: 1,
     existence: 2,
     error: 3,
   };
   var isExist = function(name) {
-    var reg = /^[a-zA-Z0-9-_]{4,16}$/;
-    if (name != '' && reg.test(name)) {
-      $.get('/car-business/system/user/checkLoginName', {
-        loginName: name
-      }, function(res) {
-        if (res == 'true') {
-          return exist.right;
-        } else {
-          return exist.existence;
-        }
-      }).error(function() {
-        return exist.error;
-      })
-    } else {
-      return exist.wrong;
-    }
+    $.get('/car-business/system/user/checkLoginName', {
+      loginName: name
+    }, function(res) {
+      if (res == 'true') {
+        return exist.right;
+      } else {
+        return exist.existence;
+      }
+    }).error(function() {
+      return exist.error;
+    })
   }
   var vm = new Vue({
     el: '#app',
@@ -134,7 +135,7 @@
         againPwd: '',
         nick: '',
         birthday: '',
-        sex: null,
+        sex: '3',
         email: '',
         tel: '',
         desc: '',
@@ -142,19 +143,47 @@
     },
     methods: {
       confirm: function() {
+        var isRight = true;
         var form = this.form;
+        var reg = /^[a-zA-Z0-9-_]{4,16}$/;
+        if (form.name != '' && reg.test(name)) {
+          //判断用名是否存在
+          var status = isExist();
+          switch (status) {
+            case 1:
+              return;
+            case 2:
+              this.warning = '用户名已存在';
+              isRight = false;
+              break;
+            case 3:
+              this.warning = '网络错误';
+              isRight = false;
+              break;
+          }
+        } else {
+          this.warning = '用户名输入有误！';
+          isRight = false;
+        }
         if (form.pwd == '' && form.againPwd == '') {
           this.warning = '密码不能为空！';
-          return
+          isRight = false;
         } else {
           if (form.pwd != form.againPwd) {
             this.warning = '两次密码输入不一致！';
-            return;
+            isRight = false;
           }
+        }
+        if (!isRight) {
+          return;
         }
         this.warning = '';
         $.post('/adduser', $('form').serialize(), function(data) {
           console.log(data);
+          //提示成功失败
+
+          //关闭弹窗
+
         }).error(function() {
           errorShow('网络异常，提交数据失败！');
         });
@@ -171,6 +200,9 @@
         } else {
           errorShow('网络异常！');
         }
+      },
+      cancel: function() {
+        console.log('cancel');
       }
     }
   })
