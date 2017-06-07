@@ -1,0 +1,398 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<%@ include file="/WEB-INF/views/include/hp.jsp"%>
+<style>
+	.content {
+    width: 550px;
+    margin: 10px auto;    
+  }
+  
+  .btn-default {
+    margin-right: 10px;
+  }
+  
+  .glyphicon-warning {
+    color: red;
+  }
+  
+  .btn-width {
+    width: 100px;
+  }
+  .form-name{
+  	width: 150px;
+  }
+  .name-waring{
+  	position: absolute;
+    top: 5px;
+    left: 180px;
+    color: red;
+  }
+</style>
+</head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content animated fadeInRight">
+		<div class="ibox-content">
+			<div id="tb" class="row row-lg">
+	        	<form id="searchForm" action="">
+					<div class="form-group">
+						<div class="col-xs-10">
+			                <div class="row">
+			                	<div class="col-xs-2">
+									<input type="text" name="filter_LIKES_name" placeholder="昵称" class="form-control input-sm"/>
+								</div>
+								<div class="col-xs-2">
+					       	        <input type="text" name="filter_LIKES_phone" placeholder="电话" class="form-control input-sm"/>
+					       	    </div>
+							    <div class="col-xs-2">
+							        <input type="text" name="filter_GTL_createDate" placeholder="开始日期" class="form-control input-sm" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})"/>
+							    </div>
+							    <div class="col-xs-2">
+							       	<input type="text" name="filter_LTL_createDate" placeholder="结束日期" class="form-control input-sm" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})"/>
+							    </div>
+							        <button type="submit" class="btn btn-primary btn-sm" ><i class="fa fa-search"></i>查询</button>
+							        <button type="button" class="btn btn-primary btn-sm" onclick="exportdata()">导出数据</button>
+							        <shiro:hasPermission name="sys:user:add">
+							       		<button class="btn btn-info btn-sm" type="button" onclick="add();"><i class="fa fa-paste"></i> 添加用户</button>
+							       	</shiro:hasPermission>
+							</div>
+						</div>
+					</div>
+				</form>
+	        	
+	        </div> 
+       		<div class="row row-lg m-t-md">
+	  			<table id="dg"></table>
+		  	</div> 
+ 		</div>
+	</div>  
+<script type="text/template" id="add-user-model">
+	<div class="content" id="app">
+    <form class="form-horizontal" id="form">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">主要信息</h3>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><span class="glyphicon glyphicon-asterisk glyphicon-warning" aria-hidden="true"></span>用户名：</label>
+            <div class="col-sm-9">
+              <input type="text" name="loginName" class="form-control form-name" v-model="form.name" @blur="checkName" placeholder="">
+              <span class="name-waring">{{nameWarning}}</span>
+              <span>长度为4-16位字符，支持数字、字母、横杠(-)、下划线(_)。</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><span class="glyphicon glyphicon-asterisk glyphicon-warning" aria-hidden="true"></span>密 码：</label>
+            <div class="col-sm-9">
+              <input type="password" class="form-control" name="plainPassword" v-model="form.pwd" placeholder="">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><span class="glyphicon glyphicon-asterisk glyphicon-warning" aria-hidden="true"></span>确认密码：</label>
+            <div class="col-sm-9">
+              <input type="password" class="form-control" v-model="form.againPwd" placeholder="">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">用户信息</h3>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">性别：</label>
+            <div class="col-sm-9">
+              <label class="radio-inline">
+                <input type="radio" name="gender" value="1" v-model="form.sex">男
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="gender" value="2" v-model="form.sex">女
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="gender" value="3" v-model="form.sex">保密
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">昵称：</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" name="name" v-model="form.nick" placeholder="">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">手机：</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" name="phone" v-model="form.tel" placeholder="">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <a href="javascript:void(0);" class="btn btn-default btn-width" @click="confirm">确定</a>
+          <a href="javascript:void(0);" class="btn btn-default btn-width" @click="cancel">取消</a>
+          <span class="text-danger">{{warning}}</span>
+        </div>
+      </div>
+    </form>
+  </div>
+</script>
+<script src="${ctx}/static/plugins/jquery/jquery.form.js"></script>
+<script src="${ctx}/static/plugins/hp/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="${ctx}/static/plugins/hp/js/plugins/validate/messages_zh.min.js"></script>
+<script src="${ctx}/static/plugins/hp/js/demo/form-validate-demo.min.js"></script>
+<script src="${ctx}/static/plugins/hp/js/plugins/toastr/toastr.min.js"></script>
+<script type="text/javascript">
+var listUrl = "${ctx}/system/user/json";
+var dg;
+$(function(){ 
+	dg=$('#dg').bootstrapTable({
+	    url: listUrl+"?"+$("#searchForm").serialize(), 
+	    dataType: "json",
+	    pagination: true, //分页
+	    singleSelect: false,
+// 	    data-locale:"zh-CN",
+	    search: false, //显示搜索框
+	    queryParamsType:"other",
+	    sidePagination: "server", //服务端处理分页
+	          columns: [
+	                  {
+	                    title: '帐号',
+	                      field: 'loginName',
+	                      align: 'center',
+	                      valign: 'middle'
+	                  }, 
+	                  {
+	                      title: '昵称',
+	                      field: 'name',
+	                      align: 'center',
+	                      valign: 'middle'
+	                  }, 
+	                  {
+	                      title: '性别',
+	                      field: 'gender',
+	                      align: 'center',
+	                      formatter : function(value, row, index) {	                 			
+	                 			if(value==1){
+	                 				return '男';
+	                 			}else if(value==2){
+	                 				return '女';
+	                 			}else{
+	                 				return '保密';
+	                 			}
+	                  	}
+	                  },
+	                  {title: '电话',field: 'phone',align: 'center'},
+	                  {title: '登录次数',field: 'loginCount',align: 'center'},
+	                  {title: '上一次登录',field: 'previousVisit',align: 'center',
+		                      formatter:function(value,row,index){
+		                    	  if(row.previousVisit){
+		                    		  return new Date(row.previousVisit).Format("yyyy-MM-dd hh:mm:ss");  
+		                    	  }else{
+		                    		  return '-';
+		                    	  }
+			                  }
+		                  },
+	                  {title: '操作',field: 'id',align: 'center',
+	                	  formatter:function(value,row,index){  
+	                  			return '<shiro:hasPermission name="sys:user:delete"><a href="javascript:upd(\''+row.id+'\');">修改</a> | </shiro:hasPermission><shiro:hasPermission name="sys:user:update"><a href="javascript:del(\''+row.id+'\');">删除</a> | </shiro:hasPermission><shiro:hasPermission name="sys:user:update"><a href="javascript:resetPasswd(\''+row.id+'\');">重置密码</a> | </shiro:hasPermission><shiro:hasPermission name="sys:user:roleView"><a href="javascript:userForRole(\''+row.id+'\');">用户角色</a></shiro:hasPermission>';
+		                  } 
+	                  }
+	              ]
+	      });
+	
+});
+
+//弹窗增加
+function add() {
+	layer.open({
+        type: 1,
+        title: '添加用户',
+        area: ['580px', '590px'],
+        content: document.querySelector('#add-user-model').innerHTML,
+        success: function($dom) {          
+          var el = $dom.find('#app').get(0);
+          addUser(el);
+        }
+      });	
+}
+
+function resetPasswd(id) {
+	layer.confirm('确定要重置该用户密码？', {icon: 7, title:'提示'}, function(index){
+		$.ajax({
+			type:'post',
+			url:"${ctx}/system/user/reset/passwd/"+id,
+			success: function(data){
+				parent.layer.alert("操作成功！新密码为：123456");
+      	cx();
+			}
+		});  
+		
+		  layer.close(index);
+		});
+}
+
+//删除
+function del(id){
+	layer.confirm('删除后无法恢复您确定要删除？', {icon: 7, title:'提示',skin:'layui-layer-molv'}, function(index){
+		$.ajax({
+			type:'get',
+			url:"${ctx}/system/user/delete/"+id,
+			success: function(data){
+				parent.layer.msg("操作成功");
+            	cx();
+			}
+		});  
+		
+		  layer.close(index);
+		});
+}
+
+//弹窗修改
+function upd(id){
+	parent.openDialog(window,{
+		  type: 2,
+		  area: ['530px', '400px'],
+		  title:"修改用户",
+		  fixed: false, //不固定
+		  maxmin: true,
+		  content: ['${ctx}/system/user/update/'+id,'no']
+		});
+}
+
+//用户角色弹窗
+function userForRole(id){
+	var index = parent.layer.open({
+		  type: 2,
+		  area: ['590px', '400px'],
+		  title:"用户角色管理",
+		  fixed: false, //不固定
+		  maxmin: true,
+		  content: '${ctx}/system/user/'+id+'/userRole',
+		  skin:'layui-layer-molv'
+		});
+}
+
+//创建查询对象并查询
+function cx(){
+	dg.bootstrapTable('refresh',{url: listUrl+"?"+$("#searchForm").serialize()}); 
+}
+$("#searchForm").on('submit',function(){    
+	cx();
+	return false;	// 返回false终止表单提交
+});
+
+function exportdata(){
+	parent.window.open(window.location.origin+"${ctx}/system/user/export","_blank");
+}
+
+//添加用户部分
+var errorShow = function(msg) {
+    layer.msg(msg, {
+      icon: 2
+    });
+  }
+  var exist = {
+    right: 1,
+    existence: 2,
+    error: 3,
+  };
+  var isExist = function(name) {
+    //将check name抽离出来。
+  }
+var API={
+	promiseAjax:function(type,api,data){
+		var dtd=$.Deferred();
+		$.ajax({
+			method: type,
+      url: api,
+      data: data,
+		}).done(function(result){
+			dtd.resolve(result);
+		}).fail(function(e,type,msg){
+			dtd.reject(type+msg);
+		})
+		return dtd;
+	}
+}
+var addUser=function(el){
+	var vm = new Vue({
+    el: el,
+    data: {
+      loading: false,
+      warning: '',
+      nameWarning:'',
+      exist: exist,
+      form: {
+        name: '',
+        pwd: '',
+        againPwd: '',
+        nick: '',
+        birthday: '',
+        sex: '3',
+        email: '',
+        tel: '',
+        desc: '',
+      }
+    },
+    methods: {
+      confirm: function() {
+        var isRight = true;
+        var form = this.form;        
+        var that=this;
+        if (form.pwd == '' && form.againPwd == '') {
+          this.warning = '密码不能为空！';   
+          return;       
+        } else {
+          if (form.pwd != form.againPwd) {
+            this.warning = '两次密码输入不一致！';            
+            return;
+          }
+        }        
+        this.warning = '';
+        API.promiseAjax('post','/car-business/system/user/create',$('#form').serialize()).then(function(res){
+        	if(res=='success'){
+        		layer.msg('添加成功！');
+        		layer.closeAll('page');
+        		//对页面进行刷新
+        	}else{
+        		that.warning='用户添加失败';
+        	}
+        }).fail(function(){
+        	errorShow('网络错误');
+        })
+      },
+      checkName: function() {
+        var form = this.form;        
+        var that=this;        
+        var reg = /^[a-zA-Z0-9-_]{4,16}$/;
+        if (form.name != '' && reg.test(form.name)) {
+          //判断用名是否存在          
+          var api='/car-business/system/user/checkLoginName';
+          API.promiseAjax('get',api,{loginName: form.name}).then(function(res){
+          	if (res == 'true') {
+			        that.nameWarning='用户名可用';
+			      } else {
+			        that.nameWarning = '用户名已存在';
+			      }
+          }).fail(function(){
+          	errorShow('网络错误');
+          });          
+        } else {
+          this.nameWarning = '用户名输入有误！';          
+        }
+      },
+      cancel: function() {
+        layer.closeAll('page');
+      }
+    }
+  })
+}
+</script>
+<script src="/car-business/static/plugins/vue/vue.js"></script>
+</body>
+</html>
