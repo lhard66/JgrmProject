@@ -8,6 +8,7 @@ import axios from 'axios';
 let axiosAPI = (url, data, method = 'GET', options) => {
   let params = {
     url,
+    params: data,
     data,
     method,
   }
@@ -28,7 +29,6 @@ let axiosAPI = (url, data, method = 'GET', options) => {
     });
   });
 }
-
 export function doPost(url, data, options) {
   return axiosAPI(url, data, 'POST', options);
 }
