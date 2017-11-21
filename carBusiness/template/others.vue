@@ -20,3 +20,11 @@
 <el-button type="primary" icon="search" :loading="searchLoading" @click="search">搜索</el-button>
 
 <el-button class="add-bill" @click="addBill">记一笔</el-button>
+
+<script>
+	this.$refs[formName].validate(valid => {
+    if (valid) {
+      //
+    }
+  });
+</script>
