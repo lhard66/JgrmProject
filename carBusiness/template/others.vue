@@ -28,3 +28,5 @@
     }
   });
 </script>
+
+<c-number v-model.number="form.realPrice" placeholder="请输入实收金额"></c-number>
