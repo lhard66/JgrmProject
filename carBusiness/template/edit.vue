@@ -1,7 +1,7 @@
 <template>
   <div>
     <navigator :item-data="navData"></navigator>
-    <contentPanel :status-data="status" @reload="init">
+    <content-view :status="status" @reload="init">
       <template v-if="status==AppStatus.READY">
         <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-suffix="：">
           <el-form-item label="备件编号" prop="partsNo">
@@ -12,11 +12,11 @@
           </el-form-item>
         </el-form>
       </template>
-    </contentPanel>
+    </content-view>
   </div>
 </template>
 <script>
-import { Navigator, ContentPanel } from '@/components';
+import { Navigator, ContentView } from '@/components';
 import { AppStatus } from '@//enums';
 // import {} from '@api';
 
@@ -24,7 +24,7 @@ export default {
   name: 'card-editor',
   components: {
     Navigator,
-    ContentPanel,
+    ContentView,
   },
   data() {
     return {
